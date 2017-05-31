@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.di;
 
-import com.example.exerciseseditor.ExercisesListActivity;
+import com.example.exerciseseditor.ui.muscles.MuscleGroupsActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -12,5 +12,5 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ExercisesListActivityModule {
     @ContributesAndroidInjector
-    abstract ExercisesListActivity contributeExercisesListActivityInjector();
+    abstract MuscleGroupsActivity contributeExercisesListActivityInjector();
 }

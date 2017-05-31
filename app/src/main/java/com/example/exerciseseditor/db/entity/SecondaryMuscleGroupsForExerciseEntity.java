@@ -3,6 +3,7 @@ package com.example.exerciseseditor.db.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -10,8 +11,10 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  * Created by Радик on 22.05.2017.
  */
 
-@Entity(tableName = "muscle_group_exercise_link", primaryKeys = {"exercise_id", "muscle_group_id"},
-foreignKeys = {
+@Entity(tableName = "muscle_group_exercise_link",
+        primaryKeys = {"exercise_id", "muscle_group_id"},
+        indices = {@Index("exercise_id"), @Index("muscle_group_id")},
+        foreignKeys = {
         @ForeignKey(
                 entity = ExerciseEntity.class,
                 parentColumns = "id",

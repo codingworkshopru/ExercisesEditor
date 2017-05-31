@@ -17,14 +17,14 @@ import dagger.android.HasActivityInjector;
  */
 
 public class ExercisesEditorApplication extends Application implements HasActivityInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
+    @Inject DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
+    @Inject DatabaseInitializer initializer;
 
     @Override
     public void onCreate() {
         super.onCreate();
         DaggerExercisesEditorApplicationComponent.create().inject(this);
-        DatabaseInitializer.getInstance().initialiseDatabase(this);
+        initializer.initialiseDatabase(this);
     }
 
     @Override

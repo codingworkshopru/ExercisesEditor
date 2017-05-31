@@ -15,28 +15,22 @@ import com.example.exerciseseditor.BuildConfig;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.db.executor.TaskExecutor;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by Радик on 23.05.2017.
  */
 
+@Singleton
 public final class DatabaseInitializer {
-    @SuppressLint("StaticFieldLeak") // using an application's context
-    private static volatile DatabaseInitializer INSTANCE = null;
     public static final String DATABASE_NAME = "ExerciseEditor.db";
-
-    public static DatabaseInitializer getInstance() {
-        if (INSTANCE == null) {
-            synchronized (DatabaseInitializer.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new DatabaseInitializer();
-                }
-            }
-        }
-        return INSTANCE;
-    }
 
     private Context context;
     private MutableLiveData<AppDatabase> db = new MutableLiveData<>();
+
+    @Inject
+    public DatabaseInitializer() {}
 
     public void initialiseDatabase(@NonNull Context context) {
         this.context = context.getApplicationContext();
