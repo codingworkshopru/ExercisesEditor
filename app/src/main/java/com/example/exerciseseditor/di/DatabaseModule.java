@@ -3,7 +3,7 @@ package com.example.exerciseseditor.di;
 import android.arch.lifecycle.LiveData;
 
 import com.example.exerciseseditor.db.AppDatabase;
-import com.example.exerciseseditor.db.DatabaseInitializer;
+import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 
 import dagger.Module;
 import dagger.Provides;

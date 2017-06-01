@@ -3,7 +3,7 @@ package com.example.exerciseseditor;
 import android.app.Activity;
 import android.app.Application;
 
-import com.example.exerciseseditor.db.DatabaseInitializer;
+import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 import com.example.exerciseseditor.di.DaggerExercisesEditorApplicationComponent;
 
 import javax.inject.Inject;

@@ -34,6 +34,11 @@ public class SecondaryMuscleGroupsForExerciseEntity {
     @ColumnInfo(name = "muscle_group_id")
     private long muscleGroupId;
 
+    public SecondaryMuscleGroupsForExerciseEntity(long exerciseId, long muscleGroupId) {
+        this.exerciseId = exerciseId;
+        this.muscleGroupId = muscleGroupId;
+    }
+
     public long getExerciseId() {
         return exerciseId;
     }

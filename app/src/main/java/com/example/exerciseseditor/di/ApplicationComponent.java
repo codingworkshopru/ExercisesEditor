@@ -15,6 +15,6 @@ import dagger.Component;
         MuscleGroupsActivityModule.class,
         DatabaseModule.class
 })
-public interface ExercisesEditorApplicationComponent {
+public interface ApplicationComponent {
     void inject(ExercisesEditorApplication app);
 }

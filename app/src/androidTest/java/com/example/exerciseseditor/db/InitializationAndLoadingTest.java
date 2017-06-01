@@ -10,6 +10,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
+import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 import com.example.exerciseseditor.model.ExerciseDifficulty;
 
 import org.junit.After;
