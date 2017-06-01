@@ -22,21 +22,21 @@ import static android.arch.persistence.room.OnConflictStrategy.FAIL;
 @Dao
 public interface SecondaryMuscleGroupsForExerciseDao {
     @Query(
-            "select * from muscle_group as mg " +
+            "select mg.* from muscle_group as mg " +
                     "join muscle_group_exercise_link as l on l.muscle_group_id = mg.id " +
                     "where l.exercise_id = :exerciseId"
     )
     LiveData<List<MuscleGroupEntity>> getSecondaryMuscleGroupsForExercise(long exerciseId);
 
     @Query(
-            "select * from exercise as e " +
+            "select e.* from exercise as e " +
                     "join muscle_group_exercise_link as l on l.exercise_id = e.id " +
                     "where l.muscle_group_id = :muscleGroupId"
     )
     LiveData<List<ExerciseEntity>> getExercisesForSecondaryMuscleGroup(long muscleGroupId);
 
     @Insert(onConflict = FAIL)
-    void createLink(SecondaryMuscleGroupsForExerciseEntity link);
+    void createLinks(List<SecondaryMuscleGroupsForExerciseEntity> links);
 
     @Update(onConflict = FAIL)
     void updateLink(SecondaryMuscleGroupsForExerciseEntity link);

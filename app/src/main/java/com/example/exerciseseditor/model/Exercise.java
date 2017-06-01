@@ -11,8 +11,14 @@ public interface Exercise extends WithIdAndName {
     long getPrimaryMuscleGroup();
     void setPrimaryMuscleGroup(long primaryMuscleGroup);
 
-    String getDescription();
-    void setDescription(String description);
+    boolean isWithWeight();
+    void setWithWeight(boolean withWeight);
+
+    String getYouTubeVideo();
+    void setYouTubeVideo(String youTubeVideo);
+
+    String getSteps();
+    void setSteps(String steps);
 
     String getCaution();
     void setCaution(String caution);

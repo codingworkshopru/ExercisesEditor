@@ -5,6 +5,7 @@ import android.arch.persistence.room.RoomDatabase;
 
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.dao.MuscleGroupDao;
+import com.example.exerciseseditor.db.dao.SecondaryMuscleGroupsForExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.db.entity.SecondaryMuscleGroupsForExerciseEntity;
@@ -21,4 +22,5 @@ import com.example.exerciseseditor.db.entity.SecondaryMuscleGroupsForExerciseEnt
 public abstract class AppDatabase extends RoomDatabase {
     public abstract MuscleGroupDao getMuscleGroupDao();
     public abstract ExerciseDao getExerciseDao();
+    public abstract SecondaryMuscleGroupsForExerciseDao getSecondaryMuscleGroupsForExerciseDao();
 }

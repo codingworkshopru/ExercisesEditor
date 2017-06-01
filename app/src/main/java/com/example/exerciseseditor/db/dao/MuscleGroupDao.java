@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
-import com.example.exerciseseditor.model.MuscleGroup;
 
 import java.util.List;
 
@@ -25,5 +24,5 @@ public interface MuscleGroupDao {
     List<MuscleGroupEntity> getAllMuscleGroupsSync();
 
     @Insert(onConflict = FAIL)
-    void insertAllMuscleGroups(List<MuscleGroupEntity> muscleGroups);
+    void insertMuscleGroups(List<MuscleGroupEntity> muscleGroups);
 }

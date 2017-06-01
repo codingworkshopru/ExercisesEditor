@@ -10,7 +10,7 @@ import dagger.android.ContributesAndroidInjector;
  */
 
 @Module
-public abstract class ExercisesListActivityModule {
+public abstract class MuscleGroupsActivityModule {
     @ContributesAndroidInjector
     abstract MuscleGroupsActivity contributeExercisesListActivityInjector();
 }

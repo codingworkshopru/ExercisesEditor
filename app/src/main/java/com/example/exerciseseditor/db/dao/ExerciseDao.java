@@ -32,6 +32,9 @@ public interface ExerciseDao {
     ExerciseEntity getExerciseByIdSync(long id);
 
     @Insert(onConflict = FAIL)
+    void insertExercises(List<ExerciseEntity> entities);
+
+    @Insert(onConflict = FAIL)
     void createExercise(ExerciseEntity exercise);
 
     @Update(onConflict = FAIL)

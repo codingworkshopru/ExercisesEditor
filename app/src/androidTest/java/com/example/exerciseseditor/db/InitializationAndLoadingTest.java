@@ -1,8 +1,6 @@
 package com.example.exerciseseditor.db;
 
 import android.arch.core.executor.testing.CountingTaskExecutorRule;
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,20 +10,20 @@ import android.support.test.runner.AndroidJUnit4;
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
-import com.example.exerciseseditor.db.executor.TaskExecutor;
 import com.example.exerciseseditor.model.ExerciseDifficulty;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Радик on 23.05.2017.
@@ -46,7 +44,7 @@ public class InitializationAndLoadingTest {
         rule.apply(new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                AsyncTask.execute(() -> DatabaseInitializer.populateDatabase(db));
+                AsyncTask.execute(() -> new DatabaseInitializer().populateDatabase(db));
                 exerciseDao = db.getExerciseDao();
             }
         }, null).evaluate();
@@ -59,7 +57,7 @@ public class InitializationAndLoadingTest {
 
     @Test
     public void testDbInitialization() throws Throwable {
-        final String expected = MuscleGroupEntity.MUSCLE_GROUPS[0];
+        final String expected = "Плечи";
         rule.apply(new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -95,11 +93,11 @@ public class InitializationAndLoadingTest {
         assertEquals("Insert fail.", exercise.getName(), exerciseName);
 
         // update
-        exercise.setDescription(description);
+        exercise.setSteps(description);
         exerciseDao.updateExercise(exercise);
         result = getExercisesSync();
         exercise = result.get(0);
-        assertEquals("Update fail.", exercise.getDescription(), description);
+        assertEquals("Update fail.", exercise.getSteps(), description);
 
         // delete
         exerciseDao.deleteExercise(exercise);
