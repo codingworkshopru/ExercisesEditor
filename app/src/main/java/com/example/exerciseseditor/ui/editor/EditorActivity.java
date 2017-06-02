@@ -1,11 +1,11 @@
 package com.example.exerciseseditor.ui.editor;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.exerciseseditor.R;
+import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends LifecycleDaggerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

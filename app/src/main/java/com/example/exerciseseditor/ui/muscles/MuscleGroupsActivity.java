@@ -1,46 +1,36 @@
 package com.example.exerciseseditor.ui.muscles;
 
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
+import com.example.exerciseseditor.model.MuscleGroup;
+import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
-
-public class MuscleGroupsActivity extends AppCompatActivity implements LifecycleRegistryOwner {
-
-    private LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+public class MuscleGroupsActivity extends LifecycleDaggerActivity {
     private MusclesViewModel viewModel;
     private MusclesAdapter adapter;
     private LiveData<List<MuscleGroupEntity>> items;
-    @Inject MusclesViewModel.MusclesViewModelFactory viewModelFactory;
+    @Inject ViewModelProvider.Factory viewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        init();
-
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_muscle_groups);
 
         initViewModel();
         obtainData();
         initAdapter();
         initRecyclerView();
-    }
-
-    private void init() {
-        AndroidInjection.inject(this);
-        setContentView(R.layout.activity_muscle_groups);
     }
 
     private void initViewModel() {
@@ -52,7 +42,7 @@ public class MuscleGroupsActivity extends AppCompatActivity implements Lifecycle
     }
 
     private void initAdapter() {
-        adapter = new MusclesAdapter();
+        adapter = new MusclesAdapter(this::onMuscleGroupClick);
         items.observe(this, adapter);
     }
 
@@ -62,8 +52,7 @@ public class MuscleGroupsActivity extends AppCompatActivity implements Lifecycle
         rv.setAdapter(adapter);
     }
 
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
+    private void onMuscleGroupClick(MuscleGroup muscleGroup) {
+        System.out.println(muscleGroup.getName());
     }
 }

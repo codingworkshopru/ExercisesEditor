@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
-import com.example.exerciseseditor.di.DaggerExercisesEditorApplicationComponent;
+import com.example.exerciseseditor.di.DaggerApplicationComponent;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,7 @@ public class ExercisesEditorApplication extends Application implements HasActivi
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerExercisesEditorApplicationComponent.create().inject(this);
+        DaggerApplicationComponent.create().inject(this);
         initializer.initialiseDatabase(this);
     }
 

@@ -6,11 +6,15 @@
         <variable
             name="item"
             type="com.example.exerciseseditor.model.MuscleGroup" />
+        <variable
+            name="callback"
+            type="com.example.exerciseseditor.ui.muscles.MusclesAdapter.OnMuscleGroupClickListener"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:onClick="@{() -> callback.onMuscleGroupClick(item)}">
 
         <TextView
             android:layout_width="0dp"

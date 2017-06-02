@@ -11,10 +11,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {
-        MuscleGroupsActivityModule.class,
-        DatabaseModule.class
-})
+@Component(modules = ApplicationModule.class)
 public interface ApplicationComponent {
     void inject(ExercisesEditorApplication app);
 }
