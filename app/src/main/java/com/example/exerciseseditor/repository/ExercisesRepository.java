@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import com.example.exerciseseditor.db.QueryExecutor;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
+import com.example.exerciseseditor.model.Exercise;
 
 import java.util.List;
 
@@ -23,7 +24,12 @@ public final class ExercisesRepository {
         this.executor = executor;
     }
 
-    public LiveData<List<ExerciseEntity>> getAllExercises() {
-        return executor.execute((db) -> db.getExerciseDao().getAllExercises());
+    public LiveData<List<ExerciseEntity>> getExercisesForMuscleGroup(long id) {
+        return executor.read((db) -> db.getExerciseDao().getExercisesForPrimaryMuscleGroup(id));
+    }
+
+    public void remove(Exercise exercise) {
+        ExerciseEntity exerciseEntity = (ExerciseEntity) exercise;
+        executor.execute((db) -> db.getExerciseDao().deleteExercise(exerciseEntity));
     }
 }

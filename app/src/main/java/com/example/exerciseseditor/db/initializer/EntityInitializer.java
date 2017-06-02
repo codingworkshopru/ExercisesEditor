@@ -33,7 +33,6 @@ abstract class EntityInitializer<T> {
     }
 
     abstract Type getType();
-
     abstract @RawRes int getJsonResourceId();
     abstract Gson buildGson();
     abstract void saveToDatabase(T data);

@@ -2,7 +2,6 @@ package com.example.exerciseseditor.repository;
 
 import android.arch.lifecycle.LiveData;
 
-import com.example.exerciseseditor.db.AppDatabase;
 import com.example.exerciseseditor.db.QueryExecutor;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 
@@ -25,6 +24,6 @@ public final class MuscleGroupsRepository {
     }
 
     public LiveData<List<MuscleGroupEntity>> getMuscleGroups() {
-        return executor.execute((db) -> db.getMuscleGroupDao().getAllMuscleGroups());
+        return executor.read((db) -> db.getMuscleGroupDao().getAllMuscleGroups());
     }
 }

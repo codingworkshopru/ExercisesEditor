@@ -25,6 +25,9 @@ public interface ExerciseDao {
     @Query("select * from exercise")
     List<ExerciseEntity> getAllExercisesSync();
 
+    @Query("select * from exercise where primary_muscle_group_id = :id")
+    LiveData<List<ExerciseEntity>> getExercisesForPrimaryMuscleGroup(long id);
+
     @Query("select * from exercise where id = :id")
     LiveData<ExerciseEntity> getExerciseById(long id);
 

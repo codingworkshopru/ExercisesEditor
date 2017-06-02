@@ -21,6 +21,10 @@ import javax.inject.Singleton;
 
 @Singleton
 public final class QueryExecutor implements Observer<AppDatabase> {
+    public interface Operation<T> {
+        void execute(T database);
+    }
+
     private LiveData<AppDatabase> liveDb;
     private AppDatabase database;
     private Executor executor;
@@ -39,7 +43,7 @@ public final class QueryExecutor implements Observer<AppDatabase> {
             this.database = database;
     }
 
-    public <F> LiveData<F> execute(Function<AppDatabase, LiveData<F>> query) {
+    public <F> LiveData<F> read(Function<AppDatabase, LiveData<F>> query) {
         if (database == null) {
             return Transformations.switchMap(
                     liveDb, (db) -> db == null ? LiveDataUtil.getAbsent() : query.apply(db));
@@ -48,7 +52,7 @@ public final class QueryExecutor implements Observer<AppDatabase> {
         }
     }
 
-    public void execute(Runnable query) {
-        executor.execute(query);
+    public void execute(Operation<AppDatabase> query) {
+        executor.execute(() -> query.execute(database));
     }
 }
