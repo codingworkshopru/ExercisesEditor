@@ -3,6 +3,7 @@ package com.example.exerciseseditor.ui.exercises;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.model.Exercise;
 import com.example.exerciseseditor.ui.common.BindingViewHolder;
 import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
+import com.example.exerciseseditor.ui.editor.EditorActivity;
 
 import java.util.List;
 
@@ -73,7 +75,9 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
     }
 
     private void onExerciseClick(Exercise exercise) {
-        System.out.println(exercise.getName());
+        Intent forEdit = new Intent(this, EditorActivity.class);
+        forEdit.putExtra("id", exercise.getId());
+        startActivity(forEdit);
     }
 
     private void initRecyclerView() {

@@ -28,6 +28,10 @@ public final class ExercisesRepository {
         return executor.read((db) -> db.getExerciseDao().getExercisesForPrimaryMuscleGroup(id));
     }
 
+    public LiveData<ExerciseEntity> getExerciseById(long id) {
+        return executor.read((db) -> db.getExerciseDao().getExerciseById(id));
+    }
+
     public void remove(Exercise exercise) {
         ExerciseEntity exerciseEntity = (ExerciseEntity) exercise;
         executor.execute((db) -> db.getExerciseDao().deleteExercise(exerciseEntity));

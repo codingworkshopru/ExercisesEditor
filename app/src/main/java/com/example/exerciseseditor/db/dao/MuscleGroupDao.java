@@ -17,10 +17,10 @@ import static android.arch.persistence.room.OnConflictStrategy.FAIL;
 
 @Dao
 public interface MuscleGroupDao {
-    @Query("select * from muscle_group")
+    @Query("select * from muscle_group order by name")
     LiveData<List<MuscleGroupEntity>> getAllMuscleGroups();
 
-    @Query("select * from muscle_group")
+    @Query("select * from muscle_group order by name")
     List<MuscleGroupEntity> getAllMuscleGroupsSync();
 
     @Insert(onConflict = FAIL)

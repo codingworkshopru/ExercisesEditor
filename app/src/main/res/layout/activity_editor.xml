@@ -9,6 +9,10 @@
             type="com.example.exerciseseditor.model.Exercise"/>
     </data>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -115,9 +119,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Caution"
-                    android:text="@={exercise.cation"/>
+                    android:text="@={exercise.caution}"/>
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
-
+    </ScrollView>
 </layout>
