@@ -11,12 +11,14 @@ import com.example.exerciseseditor.ui.muscles.MusclesViewModel;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 /**
  * Created by Радик on 02.06.2017.
  */
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
-    private Map<Class<?>, ViewModel> viewModelMap = new HashMap<>();
+    private Map<Class<?>, Provider<? extends ViewModel>> viewModelMap = new HashMap<>();
 
     public ViewModelFactory(ViewModelSubComponent viewModelSubComponent) {
         viewModelMap.put(MusclesViewModel.class, viewModelSubComponent.musclesViewModel());
@@ -27,6 +29,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         // noinspection unchecked
-        return (T) viewModelMap.get(modelClass);
+        return (T) viewModelMap.get(modelClass).get();
     }
 }
