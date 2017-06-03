@@ -10,7 +10,7 @@ import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.MuscleGroupsListItemBinding;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.model.MuscleGroup;
-import com.example.exerciseseditor.ui.common.BindingAdapter;
+import com.example.exerciseseditor.ui.common.BindingListAdapter;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Радик on 01.06.2017.
  */
 
-public class MusclesAdapter extends BindingAdapter<MuscleGroupEntity, MuscleGroupsListItemBinding> implements Observer<List<MuscleGroupEntity>> {
+public class MusclesAdapter extends BindingListAdapter<MuscleGroupEntity, MuscleGroupsListItemBinding> implements Observer<List<MuscleGroupEntity>> {
 
     public interface OnMuscleGroupClickListener {
         void onMuscleGroupClick(MuscleGroup muscleGroup);

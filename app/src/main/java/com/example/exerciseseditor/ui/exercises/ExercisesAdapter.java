@@ -10,7 +10,7 @@ import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ExercisesListItemBinding;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.model.Exercise;
-import com.example.exerciseseditor.ui.common.BindingAdapter;
+import com.example.exerciseseditor.ui.common.BindingListAdapter;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Радик on 02.06.2017.
  */
 
-public class ExercisesAdapter extends BindingAdapter<ExerciseEntity, ExercisesListItemBinding> implements Observer<List<ExerciseEntity>> {
+public class ExercisesAdapter extends BindingListAdapter<ExerciseEntity, ExercisesListItemBinding> implements Observer<List<ExerciseEntity>> {
 
     public interface OnExerciseClickListener {
         void onExerciseClick(Exercise exercise);

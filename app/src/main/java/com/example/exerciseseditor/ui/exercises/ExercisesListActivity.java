@@ -16,7 +16,7 @@ import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ExercisesListItemBinding;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.model.Exercise;
-import com.example.exerciseseditor.ui.common.BindingViewHolder;
+import com.example.exerciseseditor.ui.common.BindingListViewHolder;
 import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 import com.example.exerciseseditor.ui.editor.EditorActivity;
 
@@ -52,8 +52,9 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addMenuItem:
+                Intent intent = new Intent(this, EditorActivity.class);
+                startActivity(intent);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -93,7 +94,7 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-                Exercise exercise = ((ExercisesListItemBinding)((BindingViewHolder) viewHolder).binding).getItem();
+                Exercise exercise = ((ExercisesListItemBinding)((BindingListViewHolder) viewHolder).binding).getItem();
                 viewModel.remove(exercise);
             }
         }).attachToRecyclerView(rv);

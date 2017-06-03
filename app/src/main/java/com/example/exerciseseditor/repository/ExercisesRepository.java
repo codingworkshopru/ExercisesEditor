@@ -36,4 +36,12 @@ public final class ExercisesRepository {
         ExerciseEntity exerciseEntity = (ExerciseEntity) exercise;
         executor.execute((db) -> db.getExerciseDao().deleteExercise(exerciseEntity));
     }
+
+    public void create(ExerciseEntity exercise) {
+        executor.execute((db) -> db.getExerciseDao().createExercise(exercise));
+    }
+
+    public void update(ExerciseEntity exercise) {
+        executor.execute((db) -> db.getExerciseDao().updateExercise(exercise));
+    }
 }

@@ -11,19 +11,19 @@ import java.util.List;
  * Created by Радик on 31.05.2017.
  */
 
-public abstract class BindingAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapter<BindingViewHolder<V>> {
+public abstract class BindingListAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapter<BindingListViewHolder<V>> {
 
     @Nullable
     private List<T> items;
 
     @Override
-    public BindingViewHolder<V> onCreateViewHolder(ViewGroup parent, int i) {
+    public BindingListViewHolder<V> onCreateViewHolder(ViewGroup parent, int i) {
         V binding = createBinding(parent);
-        return new BindingViewHolder<>(binding);
+        return new BindingListViewHolder<>(binding);
     }
 
     @Override
-    public void onBindViewHolder(BindingViewHolder<V> holder, int i) {
+    public void onBindViewHolder(BindingListViewHolder<V> holder, int i) {
         if (items == null) {
             throw new NullPointerException("Items list is pointing to null");
         }
@@ -37,7 +37,7 @@ public abstract class BindingAdapter<T, V extends ViewDataBinding> extends Recyc
         return items != null ? items.size() : 0;
     }
 
-    public void setItems(@Nullable List<T> items) {
+    protected void setItems(@Nullable List<T> items) {
         this.items = items;
         notifyDataSetChanged();
     }

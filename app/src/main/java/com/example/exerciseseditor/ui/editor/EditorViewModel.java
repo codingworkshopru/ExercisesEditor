@@ -17,20 +17,53 @@ import javax.inject.Inject;
  */
 
 public class EditorViewModel extends ViewModel {
+    static final int INVALID_ID = -1;
+
     private ExercisesRepository exercisesRepository;
     private MuscleGroupsRepository muscleGroupsRepository;
 
+    private LiveData<ExerciseEntity> exercise;
+
     @Inject
-    public EditorViewModel(ExercisesRepository exercisesRepository, MuscleGroupsRepository muscleGroupsRepository) {
+    EditorViewModel(ExercisesRepository exercisesRepository, MuscleGroupsRepository muscleGroupsRepository) {
         this.exercisesRepository = exercisesRepository;
         this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
-    public LiveData<ExerciseEntity> getExerciseById(long id) {
-        return exercisesRepository.getExerciseById(id);
+    LiveData<ExerciseEntity> getExerciseById(long id) {
+        if (exercise == null) {
+            if (id != INVALID_ID) {
+                exercise = exercisesRepository.getExerciseById(id);
+            } else {
+                final ExerciseEntity newExercise = new ExerciseEntity();
+                newExercise.setId(id);
+                exercise = new LiveData<ExerciseEntity>() {
+                    {
+                        postValue(newExercise);
+                    }
+                };
+            }
+        }
+        return exercise;
     }
 
-    public LiveData<List<MuscleGroupEntity>> getAllMuscleGroups() {
+    LiveData<List<MuscleGroupEntity>> getAllMuscleGroups() {
         return muscleGroupsRepository.getMuscleGroups();
+    }
+
+    public LiveData<ExerciseEntity> getExercise() {
+        return exercise;
+    }
+
+    void saveChanges() {
+        ExerciseEntity exercise = this.exercise.getValue();
+        if (exercise == null)
+            return;
+
+        if (exercise.getId() == INVALID_ID) {
+            exercisesRepository.create(exercise);
+        } else {
+            exercisesRepository.update(exercise);
+        }
     }
 }

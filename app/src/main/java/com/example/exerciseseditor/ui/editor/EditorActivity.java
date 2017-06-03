@@ -1,32 +1,25 @@
 package com.example.exerciseseditor.ui.editor;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.databinding.InverseBindingAdapter;
-import android.databinding.InverseBindingListener;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.CheckedTextView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ActivityEditorBinding;
-import com.example.exerciseseditor.model.ExerciseDifficulty;
+import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 
 import javax.inject.Inject;
 
-public class EditorActivity extends LifecycleDaggerActivity {
+// TODO refactor all this shit
+public class EditorActivity extends LifecycleDaggerActivity implements Observer<ExerciseEntity> {
     private ActivityEditorBinding binding;
     private EditorViewModel viewModel;
     @Inject ViewModelProvider.Factory viewModelFactory;
@@ -36,42 +29,14 @@ public class EditorActivity extends LifecycleDaggerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor);
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditorViewModel.class);
-        viewModel.getExerciseById(getIntent().getLongExtra("id", 0)).observe(this, (exercise) -> binding.setExercise(exercise));
-        viewModel.getAllMuscleGroups().observe(this, (muscleGroups) -> {
-            binding.spinner2.setAdapter(new BaseAdapter() {
-                @Override
-                public int getCount() {
-                    return muscleGroups.size();
-                }
 
-                @Override
-                public Object getItem(int position) {
-                    return muscleGroups.get(position);
-                }
+        long exerciseId = getIntent().getLongExtra("id", EditorViewModel.INVALID_ID);
+        LiveData<ExerciseEntity> liveExercise = viewModel.getExerciseById(exerciseId);
+        liveExercise.observe(this, this);
 
-                @Override
-                public long getItemId(int position) {
-                    return muscleGroups.get(position).getId();
-                }
-
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view;
-                    if (convertView == null) {
-                        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                        view = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
-                    } else {
-                        view = convertView;
-                    }
-
-                    ((CheckedTextView) view).setText(muscleGroups.get(position).getName());
-
-                    return view;
-                }
-            });
-
-        });
+        viewModel.getAllMuscleGroups().observe(this, (muscleGroups) -> binding.spinner2.setAdapter(new MuscleGroupsAdapter(muscleGroups)));
     }
 
     @Override
@@ -85,63 +50,17 @@ public class EditorActivity extends LifecycleDaggerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.doneMenuItem:
+                viewModel.saveChanges();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @BindingAdapter(value = {"android:value", "android:valueAttrChanged"}, requireAll = false)
-    public static void setExerciseDifficulty(Spinner spinner, ExerciseDifficulty a, final InverseBindingListener l) {
-        if (a != null) {
-            spinner.setSelection(a.ordinal(), false);
-        } else {
-            spinner.setSelection(2, false);
-        }
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (l != null) {
-                    l.onChange();
-                }
-            }
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-    }
-
-    @InverseBindingAdapter(attribute = "android:value", event = "android:valueAttrChanged")
-    public static ExerciseDifficulty getExerciseDifficulty(Spinner spinner) {
-        return ExerciseDifficulty.values()[spinner.getSelectedItemPosition()];
-    }
-
-    @BindingAdapter(value = {"android:value", "android:valueAttrChanged"}, requireAll = false)
-    public static void setPrimaryMuscleGroup(Spinner spinner, long primaryMuscleGroup, final InverseBindingListener l) {
-        SpinnerAdapter adapter = spinner.getAdapter();
-        if (adapter != null) {
-            int position = 0;
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItemId(i) == primaryMuscleGroup) {
-                    position = i;
-                    break;
-                }
-            }
-            spinner.setSelection(position, false);
-        }
-        if (l != null) {
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    l.onChange();
-                }
-
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-        }
-    }
-
-    @InverseBindingAdapter(attribute = "android:value", event = "android:valueAttrChanged")
-    public static long getPrimaryMuscleGroup(Spinner spinner) {
-        return 0L;
+    @Override
+    public void onChanged(@Nullable ExerciseEntity exerciseEntity) {
+        if (exerciseEntity != null)
+            binding.setExercise(exerciseEntity);
     }
 }
