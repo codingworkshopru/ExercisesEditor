@@ -19,14 +19,9 @@ import java.util.List;
 class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> {
     private MuscleGroupDao muscleGroupDao;
 
-    MuscleGroupInitializer(AppDatabase database, Context context) {
+    private MuscleGroupInitializer(AppDatabase database, Context context) {
         super(context);
         muscleGroupDao = database.getMuscleGroupDao();
-    }
-
-    @Override
-    boolean checkIsInitialized() {
-        return muscleGroupDao.getMuscleGroupsCount() != 0;
     }
 
     @Override
@@ -47,5 +42,16 @@ class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> 
     @Override
     void saveToDatabase(List<MuscleGroupEntity> data) {
         muscleGroupDao.insertMuscleGroups(data);
+    }
+
+    private static boolean checkIsInitialized(AppDatabase db) {
+        return db.getMuscleGroupDao().getMuscleGroupsCount() != 0;
+    }
+
+    static void initializeIfNeeded(AppDatabase database, Context context) {
+        if (!checkIsInitialized(database)) {
+            EntityInitializer initializer = new MuscleGroupInitializer(database, context);
+            initializer.initialize();
+        }
     }
 }

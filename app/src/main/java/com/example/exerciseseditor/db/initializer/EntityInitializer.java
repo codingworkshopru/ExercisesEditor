@@ -24,9 +24,6 @@ abstract class EntityInitializer<T> {
 
     @WorkerThread
     void initialize() {
-        if (checkIsInitialized())
-            return;
-
         preInitialize();
         BufferedReader bufferedReader = getReader();
         saveToDatabase(buildGson().fromJson(bufferedReader, getType()));
@@ -40,7 +37,6 @@ abstract class EntityInitializer<T> {
 
     void preInitialize() {}
 
-    abstract boolean checkIsInitialized();
     abstract Type getType();
     abstract @RawRes int getJsonResourceId();
     abstract Gson buildGson();

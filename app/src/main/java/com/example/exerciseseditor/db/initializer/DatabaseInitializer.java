@@ -68,11 +68,10 @@ public final class DatabaseInitializer {
         return dbBuilder.build();
     }
 
-    @WorkerThread
     @VisibleForTesting
     public void populateDatabase(AppDatabase database) {
-        new MuscleGroupInitializer(database, context).initialize();
-        new ExerciseInitializer(database, context).initialize();
+        MuscleGroupInitializer.initializeIfNeeded(database, context);
+        ExerciseInitializer.initializeIfNeeded(database, context);
     }
 
     @MainThread

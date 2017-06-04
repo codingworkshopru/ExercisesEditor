@@ -34,7 +34,7 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
     private ExerciseDao exerciseDao;
     private Map<String, Long> muscleGroupNameIdMap;
 
-    ExerciseInitializer(AppDatabase database, Context context) {
+    private ExerciseInitializer(AppDatabase database, Context context) {
         super(context);
         this.database = database;
         exerciseDao = database.getExerciseDao();
@@ -43,11 +43,6 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
     @Override
     public void preInitialize() {
         createMuscleGroupNameIdMap();
-    }
-
-    @Override
-    boolean checkIsInitialized() {
-        return exerciseDao.getExercisesCount() != 0;
     }
 
     private void createMuscleGroupNameIdMap() {
@@ -127,5 +122,16 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
         }
 
         return result;
+    }
+
+    private static boolean checkIsInitialized(AppDatabase db) {
+        return db.getExerciseDao().getExercisesCount() != 0;
+    }
+
+    static void initializeIfNeeded(AppDatabase database, Context context) {
+        if (!checkIsInitialized(database)) {
+            EntityInitializer initializer = new ExerciseInitializer(database, context);
+            initializer.initialize();
+        }
     }
 }
