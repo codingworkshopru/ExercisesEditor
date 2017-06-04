@@ -23,6 +23,9 @@ public interface MuscleGroupDao {
     @Query("select * from muscle_group order by name")
     List<MuscleGroupEntity> getAllMuscleGroupsSync();
 
+    @Query("select count(*) from muscle_group")
+    int getMuscleGroupsCount();
+
     @Insert(onConflict = FAIL)
     void insertMuscleGroups(List<MuscleGroupEntity> muscleGroups);
 }

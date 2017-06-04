@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.db.AppDatabase;
+import com.example.exerciseseditor.db.dao.MuscleGroupDao;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,11 +17,16 @@ import java.util.List;
  */
 
 class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> {
-    private AppDatabase database;
+    private MuscleGroupDao muscleGroupDao;
 
     MuscleGroupInitializer(AppDatabase database, Context context) {
         super(context);
-        this.database = database;
+        muscleGroupDao = database.getMuscleGroupDao();
+    }
+
+    @Override
+    boolean checkIsInitialized() {
+        return muscleGroupDao.getMuscleGroupsCount() != 0;
     }
 
     @Override
@@ -40,6 +46,6 @@ class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> 
 
     @Override
     void saveToDatabase(List<MuscleGroupEntity> data) {
-        database.getMuscleGroupDao().insertMuscleGroups(data);
+        muscleGroupDao.insertMuscleGroups(data);
     }
 }

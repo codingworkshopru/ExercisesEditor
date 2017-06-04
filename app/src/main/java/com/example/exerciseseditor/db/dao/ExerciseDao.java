@@ -34,6 +34,9 @@ public interface ExerciseDao {
     @Query("select * from exercise where id = :id")
     ExerciseEntity getExerciseByIdSync(long id);
 
+    @Query("select count(*) from exercise")
+    int getExercisesCount();
+
     @Insert(onConflict = FAIL)
     void insertExercises(List<ExerciseEntity> entities);
 

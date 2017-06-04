@@ -2,6 +2,7 @@ package com.example.exerciseseditor.db.initializer;
 
 import android.content.Context;
 import android.support.annotation.RawRes;
+import android.support.annotation.WorkerThread;
 
 import com.google.gson.Gson;
 
@@ -21,7 +22,12 @@ abstract class EntityInitializer<T> {
         this.context = context;
     }
 
+    @WorkerThread
     void initialize() {
+        if (checkIsInitialized())
+            return;
+
+        preInitialize();
         BufferedReader bufferedReader = getReader();
         saveToDatabase(buildGson().fromJson(bufferedReader, getType()));
     }
@@ -32,6 +38,9 @@ abstract class EntityInitializer<T> {
         return new BufferedReader(streamReader);
     }
 
+    void preInitialize() {}
+
+    abstract boolean checkIsInitialized();
     abstract Type getType();
     abstract @RawRes int getJsonResourceId();
     abstract Gson buildGson();

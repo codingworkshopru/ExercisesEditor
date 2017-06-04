@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.db.AppDatabase;
 import com.example.exerciseseditor.db.converters.ExerciseDifficultyConverter;
+import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.db.entity.SecondaryMuscleGroupsForExerciseEntity;
@@ -15,10 +16,7 @@ import com.example.exerciseseditor.model.MuscleGroup;
 import com.google.common.base.Function;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -33,17 +31,23 @@ import java.util.Map;
 
 public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>> {
     private AppDatabase database;
+    private ExerciseDao exerciseDao;
     private Map<String, Long> muscleGroupNameIdMap;
 
     ExerciseInitializer(AppDatabase database, Context context) {
         super(context);
         this.database = database;
+        exerciseDao = database.getExerciseDao();
     }
 
     @Override
-    public void initialize() {
+    public void preInitialize() {
         createMuscleGroupNameIdMap();
-        super.initialize();
+    }
+
+    @Override
+    boolean checkIsInitialized() {
+        return exerciseDao.getExercisesCount() != 0;
     }
 
     private void createMuscleGroupNameIdMap() {
@@ -73,12 +77,11 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
     @Override
     Gson buildGson() {
         return new GsonBuilder()
-                .registerTypeAdapter(ExerciseDifficulty.class, new JsonDeserializer<ExerciseDifficulty>() {
-                    @Override
-                    public ExerciseDifficulty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        return ExerciseDifficultyConverter.fromIntToEnum(json.getAsInt());
-                    }
-                })
+                .registerTypeAdapter(
+                        ExerciseDifficulty.class,
+                        (JsonDeserializer<ExerciseDifficulty>) (json, a, b) ->
+                                ExerciseDifficultyConverter.fromIntToEnum(json.getAsInt())
+                )
                 .create();
     }
 
@@ -93,12 +96,12 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
             exercise.setPrimaryMuscleGroup(muscleGroupNameIdMap.get(exercise.primaryMuscle));
         }
 
-        database.getExerciseDao().insertExercises(exercises);
+        exerciseDao.insertExercises(exercises);
     }
 
     private void saveSecondaryMuscleGroupsLinks(List<ExerciseEntity> exercises) {
         // we need exercises with db ids
-        List<ExerciseEntity> exercisesWithId = database.getExerciseDao().getAllExercisesSync();
+        List<ExerciseEntity> exercisesWithId = exerciseDao.getAllExercisesSync();
 
         Map<String, Long> exerciseNameIdMap = createNameIdMap(exercisesWithId, Exercise::getName, Exercise::getId);
 

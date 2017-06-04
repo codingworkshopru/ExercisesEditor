@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 
 @Singleton
 public final class DatabaseInitializer {
-    public static final String DATABASE_NAME = "ExerciseEditor.db";
+    private static final String DATABASE_NAME = "ExerciseEditor.db";
 
     private Context context;
     private MutableLiveData<AppDatabase> db = new MutableLiveData<>();
