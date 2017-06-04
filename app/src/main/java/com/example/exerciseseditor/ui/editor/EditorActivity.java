@@ -1,42 +1,43 @@
 package com.example.exerciseseditor.ui.editor;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ActivityEditorBinding;
-import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 
 import javax.inject.Inject;
 
-// TODO refactor all this shit
-public class EditorActivity extends LifecycleDaggerActivity implements Observer<ExerciseEntity> {
-    private ActivityEditorBinding binding;
-    private EditorViewModel viewModel;
+public class EditorActivity extends LifecycleDaggerActivity {
     @Inject ViewModelProvider.Factory viewModelFactory;
 
+    private ActivityEditorBinding binding;
+    private EditorViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor);
 
+        initViewModel();
+    }
+
+    private void initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditorViewModel.class);
+        long exerciseId = getIntent().getLongExtra("id", EditorViewModel.PHANTOM_ID);
+        viewModel.init(exerciseId, this::bind);
+    }
 
-        long exerciseId = getIntent().getLongExtra("id", EditorViewModel.INVALID_ID);
-        LiveData<ExerciseEntity> liveExercise = viewModel.getExerciseById(exerciseId);
-        liveExercise.observe(this, this);
-
-        viewModel.getAllMuscleGroups().observe(this, (muscleGroups) -> binding.spinner2.setAdapter(new MuscleGroupsAdapter(muscleGroups)));
+    private void bind() {
+        binding.spinner2.setAdapter(new MuscleGroupsAdapter(viewModel.getMuscleGroups()));
+        binding.setExercise(viewModel.getExercise());
+        binding.executePendingBindings();
     }
 
     @Override
@@ -56,11 +57,5 @@ public class EditorActivity extends LifecycleDaggerActivity implements Observer<
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onChanged(@Nullable ExerciseEntity exerciseEntity) {
-        if (exerciseEntity != null)
-            binding.setExercise(exerciseEntity);
     }
 }

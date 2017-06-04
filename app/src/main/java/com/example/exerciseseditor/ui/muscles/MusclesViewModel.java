@@ -16,13 +16,17 @@ import javax.inject.Inject;
 
 public class MusclesViewModel extends ViewModel {
     private MuscleGroupsRepository muscleGroupsRepository;
+    private LiveData<List<MuscleGroupEntity>> muscleGroups;
 
     @Inject
     MusclesViewModel(MuscleGroupsRepository muscleGroupsRepository) {
         this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
-    public LiveData<List<MuscleGroupEntity>> getAllMuscleGroups() {
-        return muscleGroupsRepository.getMuscleGroups();
+    LiveData<List<MuscleGroupEntity>> getAllMuscleGroups() {
+        if (muscleGroups == null) {
+            muscleGroups = muscleGroupsRepository.getMuscleGroups();
+        }
+        return muscleGroups;
     }
 }

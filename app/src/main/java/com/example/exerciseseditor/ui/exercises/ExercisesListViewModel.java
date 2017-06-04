@@ -17,17 +17,21 @@ import javax.inject.Inject;
 
 public class ExercisesListViewModel extends ViewModel {
     private ExercisesRepository exercisesRepository;
+    private LiveData<List<ExerciseEntity>> exercises;
 
     @Inject
-    public ExercisesListViewModel(ExercisesRepository exercisesRepository) {
+    ExercisesListViewModel(ExercisesRepository exercisesRepository) {
         this.exercisesRepository = exercisesRepository;
     }
 
-    public LiveData<List<ExerciseEntity>> getExercisesForMuscleGroup(long id) {
-        return exercisesRepository.getExercisesForMuscleGroup(id);
+    LiveData<List<ExerciseEntity>> getExercisesForMuscleGroup(long id) {
+        if (exercises == null) {
+            exercises = exercisesRepository.getExercisesForMuscleGroup(id);
+        }
+        return exercises;
     }
 
-    public void remove(Exercise exercise) {
+    void remove(Exercise exercise) {
         exercisesRepository.remove(exercise);
     }
 }

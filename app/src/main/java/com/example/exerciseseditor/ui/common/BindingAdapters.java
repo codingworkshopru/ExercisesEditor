@@ -18,19 +18,9 @@ public class BindingAdapters {
     @BindingAdapter(value = {"android:value", "android:valueAttrChanged"}, requireAll = false)
     public static void setExerciseDifficulty(Spinner spinner, ExerciseDifficulty a, final InverseBindingListener l) {
         if (a != null) {
-            spinner.setSelection(a.ordinal(), false);
+            setSpinnerValue(spinner, a.ordinal());
         }
-        if (l != null) {
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    l.onChange();
-                }
-
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-        }
+        setSpinnerItemSelectedListener(spinner, l);
     }
 
     @InverseBindingAdapter(attribute = "android:value", event = "android:valueAttrChanged")
@@ -40,31 +30,57 @@ public class BindingAdapters {
 
     @BindingAdapter(value = {"android:value", "android:valueAttrChanged"}, requireAll = false)
     public static void setPrimaryMuscleGroup(Spinner spinner, long primaryMuscleGroup, final InverseBindingListener l) {
-        SpinnerAdapter adapter = spinner.getAdapter();
-        if (adapter != null) {
-            int position = 0;
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItemId(i) == primaryMuscleGroup) {
-                    position = i;
-                    break;
-                }
-            }
-            spinner.setSelection(position, false);
-        }
-        if (l != null) {
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    l.onChange();
-                }
-
-                public void onNothingSelected(AdapterView<?> parent) {}
-            });
-        }
+        setSpinnerValue(spinner, primaryMuscleGroup);
+        setSpinnerItemSelectedListener(spinner, l);
     }
 
     @InverseBindingAdapter(attribute = "android:value", event = "android:valueAttrChanged")
     public static long getPrimaryMuscleGroup(Spinner spinner) {
         return spinner.getSelectedItemId();
+    }
+
+    private static void setSpinnerValue(Spinner spinner, long value) {
+        int position = getAdapterPositionById(spinner.getAdapter(), value);
+        spinner.setSelection(position, false);
+    }
+
+    private static int getAdapterPositionById(SpinnerAdapter adapter, long id) {
+        int position = -1;
+
+        if (adapter == null || id == 0)
+            return position;
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (adapter.getItemId(i) == id) {
+                position = i;
+                break;
+            }
+        }
+
+        return position;
+    }
+
+    private static void setSpinnerItemSelectedListener(Spinner spinner, InverseBindingListener listener) {
+        if (spinner.getOnItemSelectedListener() == null && listener != null) {
+            spinner.setOnItemSelectedListener(new SpinnerItemChangedListener(listener));
+        }
+    }
+
+    private static class SpinnerItemChangedListener implements AdapterView.OnItemSelectedListener {
+        private InverseBindingListener listener;
+
+        private SpinnerItemChangedListener(InverseBindingListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            listener.onChange();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
     }
 }

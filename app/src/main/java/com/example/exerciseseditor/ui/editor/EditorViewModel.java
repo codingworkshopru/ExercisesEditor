@@ -17,12 +17,19 @@ import javax.inject.Inject;
  */
 
 public class EditorViewModel extends ViewModel {
-    static final int INVALID_ID = -1;
+    static final int PHANTOM_ID = 0;
+
+    private int loadingCountdown;
 
     private ExercisesRepository exercisesRepository;
     private MuscleGroupsRepository muscleGroupsRepository;
 
-    private LiveData<ExerciseEntity> exercise;
+    private LiveData<ExerciseEntity> liveExercise;
+    private LiveData<List<MuscleGroupEntity>> liveMuscleGroups;
+    private ExerciseEntity exercise;
+    private List<MuscleGroupEntity> muscleGroups;
+
+    private Runnable callback;
 
     @Inject
     EditorViewModel(ExercisesRepository exercisesRepository, MuscleGroupsRepository muscleGroupsRepository) {
@@ -30,40 +37,81 @@ public class EditorViewModel extends ViewModel {
         this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
-    LiveData<ExerciseEntity> getExerciseById(long id) {
-        if (exercise == null) {
-            if (id != INVALID_ID) {
-                exercise = exercisesRepository.getExerciseById(id);
-            } else {
-                final ExerciseEntity newExercise = new ExerciseEntity();
-                newExercise.setId(id);
-                exercise = new LiveData<ExerciseEntity>() {
-                    {
-                        postValue(newExercise);
-                    }
-                };
-            }
-        }
-        return exercise;
+    List<MuscleGroupEntity> getMuscleGroups() {
+        return muscleGroups;
     }
 
-    LiveData<List<MuscleGroupEntity>> getAllMuscleGroups() {
-        return muscleGroupsRepository.getMuscleGroups();
-    }
-
-    public LiveData<ExerciseEntity> getExercise() {
+    ExerciseEntity getExercise() {
         return exercise;
     }
 
     void saveChanges() {
-        ExerciseEntity exercise = this.exercise.getValue();
         if (exercise == null)
             return;
 
-        if (exercise.getId() == INVALID_ID) {
+        if (exercise.getId() == PHANTOM_ID) {
             exercisesRepository.create(exercise);
         } else {
             exercisesRepository.update(exercise);
+        }
+    }
+
+    void init(long exerciseId, Runnable callback) {
+        this.callback = callback;
+
+        if (exercise != null && muscleGroups != null) {
+            onDataLoaded();
+            return;
+        }
+
+        queryMuscleGroups();
+
+        if (exerciseId == PHANTOM_ID) {
+            createNewExercise();
+        } else {
+            queryExercise(exerciseId);
+        }
+    }
+
+    private void onDataLoaded() {
+        callback.run();
+    }
+
+    private void queryMuscleGroups() {
+        liveMuscleGroups = muscleGroupsRepository.getMuscleGroups();
+        liveMuscleGroups.observeForever(this::onMuscleGroupsLoaded);
+        loadingCountdown++;
+    }
+
+    private void onMuscleGroupsLoaded(List<MuscleGroupEntity> muscleGroups) {
+        if (muscleGroups != null) {
+            this.muscleGroups = muscleGroups;
+            liveMuscleGroups.removeObserver(this::onMuscleGroupsLoaded);
+            decreaseLoadingCountdown();
+        }
+    }
+
+    private void queryExercise(long exerciseId) {
+        liveExercise = exercisesRepository.getExerciseById(exerciseId);
+        liveExercise.observeForever(this::onExerciseLoaded);
+        loadingCountdown++;
+    }
+
+    private void onExerciseLoaded(ExerciseEntity exercise) {
+        if (exercise != null) {
+            this.exercise = exercise;
+            liveExercise.removeObserver(this::onExerciseLoaded);
+            decreaseLoadingCountdown();
+        }
+    }
+
+    private void createNewExercise() {
+        exercise = new ExerciseEntity();
+    }
+
+    private void decreaseLoadingCountdown() {
+        if (--loadingCountdown == 0) {
+            onDataLoaded();
         }
     }
 }

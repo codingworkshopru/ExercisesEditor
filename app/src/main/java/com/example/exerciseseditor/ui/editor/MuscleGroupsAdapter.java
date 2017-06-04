@@ -14,9 +14,9 @@ import java.util.List;
  * Created by Радик on 03.06.2017.
  */
 class MuscleGroupsAdapter extends BaseAdapter {
-    private final List<MuscleGroupEntity> muscleGroups;
+    private List<MuscleGroupEntity> muscleGroups;
 
-    public MuscleGroupsAdapter(List<MuscleGroupEntity> muscleGroups) {
+    MuscleGroupsAdapter(List<MuscleGroupEntity> muscleGroups) {
         this.muscleGroups = muscleGroups;
     }
 
