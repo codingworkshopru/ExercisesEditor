@@ -11,7 +11,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,29 +28,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Name"
-                    android:text="@={exercise.name}"/>
+                    android:text="@={exercise.name}" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Difficulty"/>
+                android:text="Difficulty" />
+
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:value="@={exercise.difficulty}"
-                android:entries="@array/difficulties"/>
+                android:entries="@array/difficulties"
+                android:value="@={exercise.difficulty}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Primary muscle group"/>
+                android:text="Primary muscle group" />
+
             <Spinner
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:value="@={exercise.primaryMuscleGroup}"/>
+                android:value="@={exercise.primaryMuscleGroup}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Secondary muscle groups" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/secondaryMuscleGroups"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onAddMuscleGroupButtonClick"
+                android:text="Add" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,7 +83,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Is with weight"/>
+                    android:text="Is with weight" />
 
             </LinearLayout>
 
@@ -75,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="YouTube video"
-                    android:text="@={exercise.youTubeVideo}"/>
+                    android:text="@={exercise.youTubeVideo}" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -86,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Steps"
-                    android:text="@={exercise.steps}"/>
+                    android:text="@={exercise.steps}" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -97,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Advices"
-                    android:text="@={exercise.advices}"/>
+                    android:text="@={exercise.advices}" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -108,7 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Variations"
-                    android:text="@={exercise.variations}"/>
+                    android:text="@={exercise.variations}" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -119,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Caution"
-                    android:text="@={exercise.caution}"/>
+                    android:text="@={exercise.caution}" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>

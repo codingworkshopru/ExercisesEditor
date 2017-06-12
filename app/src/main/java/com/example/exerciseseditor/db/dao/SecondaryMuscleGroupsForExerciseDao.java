@@ -24,23 +24,28 @@ public interface SecondaryMuscleGroupsForExerciseDao {
     @Query(
             "select mg.* from muscle_group as mg " +
                     "join muscle_group_exercise_link as l on l.muscle_group_id = mg.id " +
-                    "where l.exercise_id = :exerciseId"
+                    "where l.exercise_id = :exerciseId " +
+                    "order by mg.name"
     )
     LiveData<List<MuscleGroupEntity>> getSecondaryMuscleGroupsForExercise(long exerciseId);
 
     @Query(
             "select e.* from exercise as e " +
                     "join muscle_group_exercise_link as l on l.exercise_id = e.id " +
-                    "where l.muscle_group_id = :muscleGroupId"
+                    "where l.muscle_group_id = :muscleGroupId " +
+                    "order by e.name"
     )
     LiveData<List<ExerciseEntity>> getExercisesForSecondaryMuscleGroup(long muscleGroupId);
 
     @Insert(onConflict = FAIL)
     void createLinks(List<SecondaryMuscleGroupsForExerciseEntity> links);
 
+    @Insert(onConflict = FAIL)
+    void createLink(SecondaryMuscleGroupsForExerciseEntity link);
+
     @Update(onConflict = FAIL)
     void updateLink(SecondaryMuscleGroupsForExerciseEntity link);
 
     @Delete
-    void deleteLink(SecondaryMuscleGroupsForExerciseEntity link);
+    void deleteLinks(List<SecondaryMuscleGroupsForExerciseEntity> link);
 }

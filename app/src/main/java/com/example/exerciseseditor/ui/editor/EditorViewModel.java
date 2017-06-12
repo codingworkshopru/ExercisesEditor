@@ -1,14 +1,20 @@
 package com.example.exerciseseditor.ui.editor;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.repository.ExercisesRepository;
 import com.example.exerciseseditor.repository.MuscleGroupsRepository;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -24,12 +30,12 @@ public class EditorViewModel extends ViewModel {
     private ExercisesRepository exercisesRepository;
     private MuscleGroupsRepository muscleGroupsRepository;
 
+    private MutableLiveData<Boolean> dataLoaded = new MutableLiveData<>();
     private LiveData<ExerciseEntity> liveExercise;
     private LiveData<List<MuscleGroupEntity>> liveMuscleGroups;
+    private LiveData<List<MuscleGroupEntity>> liveSecondaryMuscleGroups;
     private ExerciseEntity exercise;
-    private List<MuscleGroupEntity> muscleGroups;
-
-    private Runnable callback;
+    private List<MuscleGroupEntity> secondaryMuscleGroups;
 
     @Inject
     EditorViewModel(ExercisesRepository exercisesRepository, MuscleGroupsRepository muscleGroupsRepository) {
@@ -37,12 +43,26 @@ public class EditorViewModel extends ViewModel {
         this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
-    List<MuscleGroupEntity> getMuscleGroups() {
-        return muscleGroups;
+    public List<MuscleGroupEntity> getMuscleGroups() {
+        return liveMuscleGroups.getValue();
+    }
+
+    MutableLiveData<Boolean> getDataLoaded() {
+        return dataLoaded;
     }
 
     ExerciseEntity getExercise() {
         return exercise;
+    }
+
+    List<MuscleGroupEntity> getSecondaryMuscleGroups() {
+        return secondaryMuscleGroups;
+    }
+
+    void addSecondaryMuscleGroupToExercise(int index) {
+        MuscleGroupEntity muscleGroup = getMuscleGroups().get(index);
+        if (!Iterables.tryFind(secondaryMuscleGroups, (mg) -> mg.getId() == muscleGroup.getId()).isPresent())
+            secondaryMuscleGroups.add(muscleGroup);
     }
 
     void saveChanges() {
@@ -54,12 +74,26 @@ public class EditorViewModel extends ViewModel {
         } else {
             exercisesRepository.update(exercise);
         }
+
+        List<MuscleGroupEntity> originalSecondaryMuscleGroups = liveSecondaryMuscleGroups.getValue();
+
+        Set<MuscleGroupEntity> newSet = createNewHashSet(secondaryMuscleGroups);
+        Set<MuscleGroupEntity> oldSet = createNewHashSet(originalSecondaryMuscleGroups);
+        Set<MuscleGroupEntity> commonSet = Sets.intersection(newSet, oldSet);
+
+        List<MuscleGroupEntity> toDelete = Lists.newArrayList(Sets.difference(oldSet, commonSet));
+        List<MuscleGroupEntity> toCreate = Lists.newArrayList(Sets.difference(newSet, commonSet));
+
+        exercisesRepository.addSecondaryMuscleGroupsToExercise(exercise, toCreate);
+        exercisesRepository.deleteSecondaryMuscleGroupsFromExercise(exercise, toDelete);
     }
 
-    void init(long exerciseId, Runnable callback) {
-        this.callback = callback;
+    private static <T> Set<T> createNewHashSet(Collection<T> from) {
+        return from == null ? Sets.newHashSet() : Sets.newHashSet(from);
+    }
 
-        if (exercise != null && muscleGroups != null) {
+    void init(long exerciseId) {
+        if (exercise != null) {
             onDataLoaded();
             return;
         }
@@ -74,7 +108,7 @@ public class EditorViewModel extends ViewModel {
     }
 
     private void onDataLoaded() {
-        callback.run();
+        dataLoaded.setValue(true);
     }
 
     private void queryMuscleGroups() {
@@ -85,7 +119,6 @@ public class EditorViewModel extends ViewModel {
 
     private void onMuscleGroupsLoaded(List<MuscleGroupEntity> muscleGroups) {
         if (muscleGroups != null) {
-            this.muscleGroups = muscleGroups;
             liveMuscleGroups.removeObserver(this::onMuscleGroupsLoaded);
             decreaseLoadingCountdown();
         }
@@ -95,6 +128,7 @@ public class EditorViewModel extends ViewModel {
         liveExercise = exercisesRepository.getExerciseById(exerciseId);
         liveExercise.observeForever(this::onExerciseLoaded);
         loadingCountdown++;
+        querySecondaryMuscleGroups(exerciseId);
     }
 
     private void onExerciseLoaded(ExerciseEntity exercise) {
@@ -103,6 +137,18 @@ public class EditorViewModel extends ViewModel {
             liveExercise.removeObserver(this::onExerciseLoaded);
             decreaseLoadingCountdown();
         }
+    }
+
+    private void querySecondaryMuscleGroups(long exerciseId) {
+        liveSecondaryMuscleGroups = exercisesRepository.getSecondaryMuscleGroupsForExercise(exerciseId);
+        liveSecondaryMuscleGroups.observeForever(this::onSecondaryMuscleGroupsLoaded);
+        loadingCountdown++;
+    }
+
+    private void onSecondaryMuscleGroupsLoaded(List<MuscleGroupEntity> loadedSecondaryMuscleGroups) {
+        secondaryMuscleGroups = Lists.newArrayList(loadedSecondaryMuscleGroups);
+        liveSecondaryMuscleGroups.removeObserver(this::onSecondaryMuscleGroupsLoaded);
+        decreaseLoadingCountdown();
     }
 
     private void createNewExercise() {

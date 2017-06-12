@@ -5,6 +5,7 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.example.exerciseseditor.model.MuscleGroup;
+import com.google.common.base.Objects;
 
 /**
  * Created by Радик on 22.05.2017.
@@ -38,5 +39,15 @@ public class MuscleGroupEntity implements MuscleGroup {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MuscleGroupEntity && (this == obj || ((MuscleGroupEntity) obj).getId() == id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name);
     }
 }
