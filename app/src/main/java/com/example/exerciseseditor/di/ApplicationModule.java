@@ -1,9 +1,9 @@
 package com.example.exerciseseditor.di;
 
-import android.arch.lifecycle.LiveData;
-
 import com.example.exerciseseditor.db.AppDatabase;
 import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,12 +16,15 @@ import dagger.Provides;
         includes = {
                 ViewModelModule.class,
                 ActivityModule.class,
-                FragmentModule.class
+                FragmentModule.class,
+                InitializerModule.class,
+                DatabaseModule.class
         }
 )
 class ApplicationModule {
-    @Provides @LiveDatabase
-    LiveData<AppDatabase> providesLiveDatabase(DatabaseInitializer databaseInitializer) {
+
+    @Provides @Singleton
+    AppDatabase providesDatabase(DatabaseInitializer databaseInitializer) {
         return databaseInitializer.getDatabase();
     }
 }

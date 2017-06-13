@@ -15,15 +15,16 @@ import java.lang.reflect.Type;
  * Created by Радик on 01.06.2017.
  */
 
-abstract class EntityInitializer<T> {
+abstract class EntityInitializer<T> implements Initializer {
     private Context context;
 
-    EntityInitializer(Context context) {
+    public EntityInitializer(Context context) {
         this.context = context;
     }
 
     @WorkerThread
-    void initialize() {
+    @Override
+    public void initialize() {
         preInitialize();
         BufferedReader bufferedReader = getReader();
         saveToDatabase(buildGson().fromJson(bufferedReader, getType()));

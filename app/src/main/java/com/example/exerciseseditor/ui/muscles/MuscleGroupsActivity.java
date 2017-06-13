@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.exerciseseditor.AppInitializer;
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.model.MuscleGroup;
@@ -15,24 +16,34 @@ import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 import com.example.exerciseseditor.ui.exercises.ExercisesListActivity;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.inject.Inject;
 
 public class MuscleGroupsActivity extends LifecycleDaggerActivity {
+    @Inject ViewModelProvider.Factory viewModelFactory;
+    @Inject AppInitializer appInitializer;
+
     private MusclesViewModel viewModel;
     private MusclesAdapter adapter;
     private LiveData<List<MuscleGroupEntity>> items;
-    @Inject ViewModelProvider.Factory viewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muscle_groups_list);
 
-        initViewModel();
-        obtainData();
-        initAdapter();
-        initRecyclerView();
+        Observer observer = new Observer() {
+            @Override
+            public void update(Observable observable, Object o) {
+                initViewModel();
+                obtainData();
+                initAdapter();
+                initRecyclerView();
+            }
+        };
+        appInitializer.addObserver(observer);
     }
 
     private void initViewModel() {

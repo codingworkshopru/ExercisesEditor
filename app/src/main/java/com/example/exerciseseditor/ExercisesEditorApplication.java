@@ -3,7 +3,6 @@ package com.example.exerciseseditor;
 import android.app.Activity;
 import android.app.Application;
 
-import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 import com.example.exerciseseditor.di.DaggerApplicationComponent;
 
 import javax.inject.Inject;
@@ -18,13 +17,13 @@ import dagger.android.HasActivityInjector;
 
 public class ExercisesEditorApplication extends Application implements HasActivityInjector {
     @Inject DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
-    @Inject DatabaseInitializer initializer;
+    @Inject AppInitializer appInitializer;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerApplicationComponent.create().inject(this);
-        initializer.initialiseDatabase(this);
+        DaggerApplicationComponent.builder().injectContext(getApplicationContext()).build().inject(this);
+        appInitializer.initialize();
     }
 
     @Override

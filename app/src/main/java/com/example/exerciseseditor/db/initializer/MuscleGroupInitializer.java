@@ -12,16 +12,27 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
+
 /**
  * Created by Радик on 01.06.2017.
  */
 
-class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> {
+
+public class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> {
+    @Inject Lazy<AppDatabase> database;
     private MuscleGroupDao muscleGroupDao;
 
-    private MuscleGroupInitializer(AppDatabase database, Context context) {
+    @Inject
+    MuscleGroupInitializer(Context context) {
         super(context);
-        muscleGroupDao = database.getMuscleGroupDao();
+    }
+
+    @Override
+    void preInitialize() {
+        muscleGroupDao = database.get().getMuscleGroupDao();
     }
 
     @Override
@@ -42,16 +53,5 @@ class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> 
     @Override
     void saveToDatabase(List<MuscleGroupEntity> data) {
         muscleGroupDao.insertMuscleGroups(data);
-    }
-
-    private static boolean checkIsInitialized(AppDatabase db) {
-        return db.getMuscleGroupDao().getMuscleGroupsCount() != 0;
-    }
-
-    static void initializeIfNeeded(AppDatabase database, Context context) {
-        if (!checkIsInitialized(database)) {
-            EntityInitializer initializer = new MuscleGroupInitializer(database, context);
-            initializer.initialize();
-        }
     }
 }

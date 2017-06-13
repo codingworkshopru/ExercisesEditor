@@ -2,7 +2,7 @@ package com.example.exerciseseditor.repository;
 
 import android.arch.lifecycle.LiveData;
 
-import com.example.exerciseseditor.db.QueryExecutor;
+import com.example.exerciseseditor.db.dao.MuscleGroupDao;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 
 import java.util.List;
@@ -16,14 +16,14 @@ import javax.inject.Singleton;
 
 @Singleton
 public final class MuscleGroupsRepository {
-    private QueryExecutor executor;
+    private MuscleGroupDao muscleGroupDao;
 
     @Inject
-    public MuscleGroupsRepository(QueryExecutor executor) {
-        this.executor = executor;
+    public MuscleGroupsRepository(MuscleGroupDao muscleGroupDao) {
+        this.muscleGroupDao = muscleGroupDao;
     }
 
     public LiveData<List<MuscleGroupEntity>> getMuscleGroups() {
-        return executor.read((db) -> db.getMuscleGroupDao().getAllMuscleGroups());
+        return muscleGroupDao.getAllMuscleGroups();
     }
 }

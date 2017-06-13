@@ -3,14 +3,12 @@ package com.example.exerciseseditor.db;
 import android.arch.core.executor.testing.CountingTaskExecutorRule;
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
-import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 import com.example.exerciseseditor.model.ExerciseDifficulty;
 
 import org.junit.After;
@@ -45,7 +43,7 @@ public class InitializationAndLoadingTest {
         rule.apply(new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                AsyncTask.execute(() -> new DatabaseInitializer().populateDatabase(db));
+//                AsyncTask.execute(() -> new DatabaseInitializer().populateDatabase(db));
                 exerciseDao = db.getExerciseDao();
             }
         }, null).evaluate();

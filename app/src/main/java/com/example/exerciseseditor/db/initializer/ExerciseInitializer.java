@@ -25,28 +25,32 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
+
 /**
  * Created by Радик on 01.06.2017.
  */
 
 public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>> {
-    private AppDatabase database;
+    @Inject Lazy<AppDatabase> database;
     private ExerciseDao exerciseDao;
     private Map<String, Long> muscleGroupNameIdMap;
 
-    private ExerciseInitializer(AppDatabase database, Context context) {
+    @Inject
+    ExerciseInitializer(Context context) {
         super(context);
-        this.database = database;
-        exerciseDao = database.getExerciseDao();
     }
 
     @Override
     public void preInitialize() {
+        exerciseDao = database.get().getExerciseDao();
         createMuscleGroupNameIdMap();
     }
 
     private void createMuscleGroupNameIdMap() {
-        List<MuscleGroupEntity> muscleGroups = database.getMuscleGroupDao().getAllMuscleGroupsSync();
+        List<MuscleGroupEntity> muscleGroups = database.get().getMuscleGroupDao().getAllMuscleGroupsSync();
         muscleGroupNameIdMap = createNameIdMap(muscleGroups, MuscleGroup::getName, MuscleGroup::getId);
     }
 
@@ -107,7 +111,7 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
             links.addAll(exercisesLinks);
         }
 
-        database.getSecondaryMuscleGroupsForExerciseDao().createLinks(links);
+        database.get().getSecondaryMuscleGroupsForExerciseDao().createLinks(links);
     }
 
     private @Nullable List<SecondaryMuscleGroupsForExerciseEntity> getLinksForExercise(ExerciseEntity exercise, Map<String, Long> exerciseNameIdMap) {
@@ -122,16 +126,5 @@ public class ExerciseInitializer extends EntityInitializer<List<ExerciseEntity>>
         }
 
         return result;
-    }
-
-    private static boolean checkIsInitialized(AppDatabase db) {
-        return db.getExerciseDao().getExercisesCount() != 0;
-    }
-
-    static void initializeIfNeeded(AppDatabase database, Context context) {
-        if (!checkIsInitialized(database)) {
-            EntityInitializer initializer = new ExerciseInitializer(database, context);
-            initializer.initialize();
-        }
     }
 }

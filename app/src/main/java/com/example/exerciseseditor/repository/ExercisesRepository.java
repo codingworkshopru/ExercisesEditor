@@ -2,7 +2,8 @@ package com.example.exerciseseditor.repository;
 
 import android.arch.lifecycle.LiveData;
 
-import com.example.exerciseseditor.db.QueryExecutor;
+import com.example.exerciseseditor.db.dao.ExerciseDao;
+import com.example.exerciseseditor.db.dao.SecondaryMuscleGroupsForExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.db.entity.SecondaryMuscleGroupsForExerciseEntity;
@@ -20,46 +21,49 @@ import javax.inject.Singleton;
 
 @Singleton
 public final class ExercisesRepository {
-    private QueryExecutor executor;
+    private ExerciseDao exerciseDao;
+    private SecondaryMuscleGroupsForExerciseDao secondaryMuscleGroupsForExerciseDao;
 
     @Inject
-    ExercisesRepository(QueryExecutor executor) {
-        this.executor = executor;
+    public ExercisesRepository(ExerciseDao exerciseDao, SecondaryMuscleGroupsForExerciseDao secondaryMuscleGroupsForExerciseDao) {
+        this.exerciseDao = exerciseDao;
+        this.secondaryMuscleGroupsForExerciseDao = secondaryMuscleGroupsForExerciseDao;
     }
 
+
     public LiveData<List<ExerciseEntity>> getExercisesForMuscleGroup(long id) {
-        return executor.read((db) -> db.getExerciseDao().getExercisesForPrimaryMuscleGroup(id));
+        return exerciseDao.getExercisesForPrimaryMuscleGroup(id);
     }
 
     public LiveData<ExerciseEntity> getExerciseById(long id) {
-        return executor.read((db) -> db.getExerciseDao().getExerciseById(id));
+        return exerciseDao.getExerciseById(id);
     }
 
     public void remove(Exercise exercise) {
         ExerciseEntity exerciseEntity = (ExerciseEntity) exercise;
-        executor.execute((db) -> db.getExerciseDao().deleteExercise(exerciseEntity));
+        exerciseDao.deleteExercise(exerciseEntity);
     }
 
     public void create(ExerciseEntity exercise) {
-        executor.execute((db) -> db.getExerciseDao().createExercise(exercise));
+        exerciseDao.createExercise(exercise);
     }
 
     public void update(ExerciseEntity exercise) {
-        executor.execute((db) -> db.getExerciseDao().updateExercise(exercise));
+        exerciseDao.updateExercise(exercise);
     }
 
     public LiveData<List<MuscleGroupEntity>> getSecondaryMuscleGroupsForExercise(long id) {
-        return executor.read((db) -> db.getSecondaryMuscleGroupsForExerciseDao().getSecondaryMuscleGroupsForExercise(id));
+        return secondaryMuscleGroupsForExerciseDao.getSecondaryMuscleGroupsForExercise(id);
     }
 
     public void addSecondaryMuscleGroupsToExercise(Exercise exercise, List<MuscleGroupEntity> muscleGroups) {
         List<SecondaryMuscleGroupsForExerciseEntity> links = createLinkInstances(exercise, muscleGroups);
-        executor.execute((db) -> db.getSecondaryMuscleGroupsForExerciseDao().createLinks(links));
+        secondaryMuscleGroupsForExerciseDao.createLinks(links);
     }
 
     public void deleteSecondaryMuscleGroupsFromExercise(Exercise exercise, List<MuscleGroupEntity> muscleGroups) {
         List<SecondaryMuscleGroupsForExerciseEntity> links = createLinkInstances(exercise, muscleGroups);
-        executor.execute((db) -> db.getSecondaryMuscleGroupsForExerciseDao().deleteLinks(links));
+        secondaryMuscleGroupsForExerciseDao.deleteLinks(links);
     }
 
     private static List<SecondaryMuscleGroupsForExerciseEntity> createLinkInstances(Exercise e, List<MuscleGroupEntity> muscleGroups) {
