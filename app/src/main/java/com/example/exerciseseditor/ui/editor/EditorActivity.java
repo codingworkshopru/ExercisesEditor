@@ -15,9 +15,12 @@ import android.view.View;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ActivityEditorBinding;
+import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.ui.common.LifecycleDaggerActivity;
 import com.example.exerciseseditor.ui.editor.secondarymusclegroups.SecondaryMuscleGroupSelector;
 import com.example.exerciseseditor.ui.editor.secondarymusclegroups.SecondaryMuscleGroupsListAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,39 +45,37 @@ public class EditorActivity extends LifecycleDaggerActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor);
 
         initViewModel();
+        initData();
     }
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditorViewModel.class);
         long exerciseId = getIntent().getLongExtra("id", EditorViewModel.PHANTOM_ID);
         viewModel.init(exerciseId);
-        subscribeWhenDataLoaded();
     }
 
-    private void subscribeWhenDataLoaded() {
-        viewModel.getDataLoaded().observe(this, this::onDataLoaded);
+    private void initData() {
+        viewModel.getMuscleGroups().observe(this, this::onMuscleGroupsLoaded);
+        viewModel.getSecondaryMuscleGroups().observe(this, this::initSecondaryMuscleGroupsList);
     }
 
-    private void onDataLoaded(boolean loaded) {
-        if (loaded) {
-            initMuscleGroupsSpinner();
-            bindContentView();
-            initSecondaryMuscleGroupsList();
-        }
+    private void onMuscleGroupsLoaded(List<MuscleGroupEntity> muscleGroups) {
+        initMuscleGroupsSpinner(muscleGroups);
+        initExercise();
     }
 
-    private void initMuscleGroupsSpinner() {
-        binding.spinner2.setAdapter(new MuscleGroupsAdapter(viewModel.getMuscleGroups()));
+    private void initMuscleGroupsSpinner(List<MuscleGroupEntity> muscleGroups) {
+        MuscleGroupsAdapter muscleGroupsAdapter = new MuscleGroupsAdapter(muscleGroups);
+        binding.spinner2.setAdapter(muscleGroupsAdapter);
     }
 
-    private void bindContentView() {
-        binding.setExercise(viewModel.getExercise());
-        binding.executePendingBindings();
+    private void initExercise() {
+        viewModel.getExercise().observe(this, (exercise) -> binding.setExercise(exercise));
     }
 
-    private void initSecondaryMuscleGroupsList() {
+    private void initSecondaryMuscleGroupsList(List<MuscleGroupEntity> secondaryMuscleGroups) {
         binding.secondaryMuscleGroups.setLayoutManager(new LinearLayoutManager(this));
-        secondaryMuscleGroupsListAdapter = new SecondaryMuscleGroupsListAdapter(viewModel.getSecondaryMuscleGroups());
+        secondaryMuscleGroupsListAdapter = new SecondaryMuscleGroupsListAdapter(secondaryMuscleGroups);
         binding.secondaryMuscleGroups.setAdapter(secondaryMuscleGroupsListAdapter);
     }
 

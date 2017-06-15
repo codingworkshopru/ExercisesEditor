@@ -22,7 +22,7 @@ public final class DatabaseInitializer implements Initializer {
     private Context context;
 
     @Inject
-    public DatabaseInitializer(Context context) {
+    DatabaseInitializer(Context context) {
         this.context = context;
     }
 

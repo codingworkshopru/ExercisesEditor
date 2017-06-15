@@ -3,10 +3,8 @@ package com.example.exerciseseditor.db.initializer;
 import android.content.Context;
 
 import com.example.exerciseseditor.R;
-import com.example.exerciseseditor.db.AppDatabase;
-import com.example.exerciseseditor.db.dao.MuscleGroupDao;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
-import com.google.gson.Gson;
+import com.example.exerciseseditor.repository.MuscleGroupsRepository;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -22,17 +20,17 @@ import dagger.Lazy;
 
 
 public class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEntity>> {
-    @Inject Lazy<AppDatabase> database;
-    private MuscleGroupDao muscleGroupDao;
+    private Lazy<MuscleGroupsRepository> muscleGroupsRepository;
 
     @Inject
-    MuscleGroupInitializer(Context context) {
+    MuscleGroupInitializer(Context context, Lazy<MuscleGroupsRepository> muscleGroupsRepository) {
         super(context);
+        this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
     @Override
-    void preInitialize() {
-        muscleGroupDao = database.get().getMuscleGroupDao();
+    boolean needToInitialize() {
+        return muscleGroupsRepository.get().isEmpty();
     }
 
     @Override
@@ -46,12 +44,7 @@ public class MuscleGroupInitializer extends EntityInitializer<List<MuscleGroupEn
     }
 
     @Override
-    Gson buildGson() {
-        return new Gson();
-    }
-
-    @Override
     void saveToDatabase(List<MuscleGroupEntity> data) {
-        muscleGroupDao.insertMuscleGroups(data);
+        muscleGroupsRepository.get().insertMuscleGroups(data);
     }
 }

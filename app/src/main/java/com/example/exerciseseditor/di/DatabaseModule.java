@@ -3,7 +3,6 @@ package com.example.exerciseseditor.di;
 import com.example.exerciseseditor.db.AppDatabase;
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.dao.MuscleGroupDao;
-import com.example.exerciseseditor.db.dao.SecondaryMuscleGroupsForExerciseDao;
 
 import javax.inject.Singleton;
 
@@ -26,11 +25,5 @@ class DatabaseModule {
     @Singleton
     MuscleGroupDao providesMuscleGroupDao(AppDatabase db) {
         return db.getMuscleGroupDao();
-    }
-
-    @Provides
-    @Singleton
-    SecondaryMuscleGroupsForExerciseDao getSecondaryMuscleGroupsForExerciseDao(AppDatabase db) {
-        return db.getSecondaryMuscleGroupsForExerciseDao();
     }
 }

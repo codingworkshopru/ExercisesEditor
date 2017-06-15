@@ -19,11 +19,19 @@ public final class MuscleGroupsRepository {
     private MuscleGroupDao muscleGroupDao;
 
     @Inject
-    public MuscleGroupsRepository(MuscleGroupDao muscleGroupDao) {
+    MuscleGroupsRepository(MuscleGroupDao muscleGroupDao) {
         this.muscleGroupDao = muscleGroupDao;
+    }
+
+    public boolean isEmpty() {
+        return muscleGroupDao.getMuscleGroupsCount() == 0;
     }
 
     public LiveData<List<MuscleGroupEntity>> getMuscleGroups() {
         return muscleGroupDao.getAllMuscleGroups();
+    }
+
+    public void insertMuscleGroups(List<MuscleGroupEntity> muscleGroups) {
+        muscleGroupDao.insertMuscleGroups(muscleGroups);
     }
 }

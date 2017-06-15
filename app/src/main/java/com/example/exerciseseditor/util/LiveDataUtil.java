@@ -14,7 +14,8 @@ public final class LiveDataUtil {
         }
     };
 
-    public static LiveData getAbsent() {
-        return ABSENT;
+    public static <T> LiveData<T> getAbsent() {
+        // noinspection unchecked
+        return (LiveData<T>) ABSENT;
     }
 }

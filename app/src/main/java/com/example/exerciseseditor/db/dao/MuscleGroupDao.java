@@ -26,6 +26,9 @@ public interface MuscleGroupDao {
     @Query("select count(*) from muscle_group")
     int getMuscleGroupsCount();
 
+    @Query("select * from muscle_group where id = :id")
+    LiveData<MuscleGroupEntity> getMuscleGroupById(long id);
+
     @Insert(onConflict = FAIL)
     void insertMuscleGroups(List<MuscleGroupEntity> muscleGroups);
 }

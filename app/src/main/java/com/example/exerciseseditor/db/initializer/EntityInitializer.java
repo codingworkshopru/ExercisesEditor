@@ -18,16 +18,24 @@ import java.lang.reflect.Type;
 abstract class EntityInitializer<T> implements Initializer {
     private Context context;
 
-    public EntityInitializer(Context context) {
+    EntityInitializer(Context context) {
         this.context = context;
     }
 
     @WorkerThread
     @Override
     public void initialize() {
-        preInitialize();
-        BufferedReader bufferedReader = getReader();
-        saveToDatabase(buildGson().fromJson(bufferedReader, getType()));
+        if (needToInitialize()) {
+            BufferedReader bufferedReader = getReader();
+            saveToDatabase(buildGson().fromJson(bufferedReader, getType()));
+
+            // TODO delete when done with initializer
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private BufferedReader getReader() {
@@ -36,10 +44,12 @@ abstract class EntityInitializer<T> implements Initializer {
         return new BufferedReader(streamReader);
     }
 
-    void preInitialize() {}
+    Gson buildGson() {
+        return new Gson();
+    }
 
+    abstract boolean needToInitialize();
     abstract Type getType();
     abstract @RawRes int getJsonResourceId();
-    abstract Gson buildGson();
     abstract void saveToDatabase(T data);
 }

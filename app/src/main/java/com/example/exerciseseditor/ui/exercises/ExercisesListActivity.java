@@ -82,7 +82,7 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
     }
 
     private void initRecyclerView() {
-        RecyclerView rv = (RecyclerView) findViewById(R.id.exercises);
+        RecyclerView rv = findViewById(R.id.exercises);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 

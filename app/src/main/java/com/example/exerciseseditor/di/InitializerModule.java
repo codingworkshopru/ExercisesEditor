@@ -15,7 +15,7 @@ import dagger.multibindings.IntoMap;
  */
 
 @Module
-public abstract class InitializerModule {
+abstract class InitializerModule {
     @Binds
     @IntoMap
     @IntKey(0)

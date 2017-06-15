@@ -3,6 +3,8 @@ package com.example.exerciseseditor.ui.editor.secondarymusclegroups;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -21,7 +23,7 @@ import dagger.android.AndroidInjection;
  * Created by Радик on 06.06.2017.
  */
 
-public class SecondaryMuscleGroupSelector extends DialogFragment {
+public class SecondaryMuscleGroupSelector extends DialogFragment implements LifecycleRegistryOwner {
 
     public interface OnSecondaryMuscleGroupSelectListener {
         void onMuscleGroupSelect(DialogInterface dialog, int which);
@@ -29,6 +31,7 @@ public class SecondaryMuscleGroupSelector extends DialogFragment {
 
     @Inject ViewModelProvider.Factory viewModelFactory;
 
+    private LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private OnSecondaryMuscleGroupSelectListener listener;
     private EditorViewModel viewModel;
 
@@ -45,7 +48,12 @@ public class SecondaryMuscleGroupSelector extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setAdapter(new MuscleGroupsAdapter(viewModel.getMuscleGroups()), listener::onMuscleGroupSelect)
+                .setAdapter(new MuscleGroupsAdapter(viewModel.getMuscleGroups().getValue()), listener::onMuscleGroupSelect)
                 .create();
+    }
+
+    @Override
+    public LifecycleRegistry getLifecycle() {
+        return lifecycleRegistry;
     }
 }

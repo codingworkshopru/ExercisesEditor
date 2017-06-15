@@ -14,16 +14,17 @@ import dagger.Provides;
 
 @Module(
         includes = {
+                InitializerModule.class,
                 ViewModelModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
-                InitializerModule.class,
                 DatabaseModule.class
         }
 )
 class ApplicationModule {
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     AppDatabase providesDatabase(DatabaseInitializer databaseInitializer) {
         return databaseInitializer.getDatabase();
     }

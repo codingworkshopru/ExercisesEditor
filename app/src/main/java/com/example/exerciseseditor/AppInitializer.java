@@ -1,12 +1,12 @@
 package com.example.exerciseseditor;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
 import com.example.exerciseseditor.db.initializer.Initializer;
 
 import java.util.Map;
-import java.util.Observable;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
@@ -17,12 +17,17 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class AppInitializer extends Observable implements Initializer {
+public class AppInitializer implements Initializer {
     private Map<Integer, Initializer> initializerMap;
+    private MutableLiveData<Boolean> initialized = new MutableLiveData<>();
 
     @Inject
-    public AppInitializer(Map<Integer, Initializer> commands) {
+    AppInitializer(Map<Integer, Initializer> commands) {
         this.initializerMap = new TreeMap<>(commands);
+    }
+
+    public MutableLiveData<Boolean> getInitialized() {
+        return initialized;
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -32,21 +37,16 @@ public class AppInitializer extends Observable implements Initializer {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                try {
-                    Thread.sleep(6000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 for (Initializer initializer : initializerMap.values()) {
                     initializer.initialize();
                 }
-                setChanged();
+
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                notifyObservers();
+                initialized.setValue(true);
             }
         }.execute();
     }
