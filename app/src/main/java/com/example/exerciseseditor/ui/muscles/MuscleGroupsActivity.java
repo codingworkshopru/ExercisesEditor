@@ -50,7 +50,7 @@ public class MuscleGroupsActivity extends LifecycleDaggerActivity {
     }
 
     private void initRecyclerView() {
-        RecyclerView rv = findViewById(R.id.muscleGroups);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.muscleGroups);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
     }

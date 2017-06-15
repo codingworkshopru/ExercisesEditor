@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 
+import com.google.common.base.Objects;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
@@ -53,5 +55,23 @@ public class SecondaryMuscleGroupsForExerciseEntity {
 
     public void setMuscleGroupId(long muscleGroupId) {
         this.muscleGroupId = muscleGroupId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (!(obj instanceof SecondaryMuscleGroupsForExerciseEntity))
+            return false;
+
+        SecondaryMuscleGroupsForExerciseEntity other = (SecondaryMuscleGroupsForExerciseEntity) obj;
+        return exerciseId == other.exerciseId
+                && muscleGroupId == other.muscleGroupId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(exerciseId, muscleGroupId);
     }
 }

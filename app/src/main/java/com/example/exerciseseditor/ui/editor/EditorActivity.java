@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -74,9 +76,23 @@ public class EditorActivity extends LifecycleDaggerActivity
     }
 
     private void initSecondaryMuscleGroupsList(List<MuscleGroupEntity> secondaryMuscleGroups) {
-        binding.secondaryMuscleGroups.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView rv = binding.secondaryMuscleGroups;
+        rv.setLayoutManager(new LinearLayoutManager(this));
         secondaryMuscleGroupsListAdapter = new SecondaryMuscleGroupsListAdapter(secondaryMuscleGroups);
-        binding.secondaryMuscleGroups.setAdapter(secondaryMuscleGroupsListAdapter);
+        rv.setAdapter(secondaryMuscleGroupsListAdapter);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+                int removedIndex = viewHolder.getAdapterPosition();
+                viewModel.removeSecondaryMuscleGroupFromExercise(removedIndex);
+                secondaryMuscleGroupsListAdapter.notifyItemRemoved(removedIndex);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+        }).attachToRecyclerView(rv);
     }
 
     @Override

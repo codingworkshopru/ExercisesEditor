@@ -55,6 +55,9 @@ public interface ExerciseDao {
     )
     LiveData<List<MuscleGroupEntity>> getSecondaryMuscleGroupsForExercise(long exerciseId);
 
+    @Query("select * from muscle_group_exercise_link where exercise_id = :exerciseId ")
+    List<SecondaryMuscleGroupsForExerciseEntity> getSecondaryMuscleGroupsForExerciseSync(long exerciseId);
+
     @Insert(onConflict = FAIL)
     void insertExercises(List<ExerciseEntity> entities);
 

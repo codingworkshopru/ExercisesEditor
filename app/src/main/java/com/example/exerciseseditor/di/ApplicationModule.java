@@ -3,6 +3,9 @@ package com.example.exerciseseditor.di;
 import com.example.exerciseseditor.db.AppDatabase;
 import com.example.exerciseseditor.db.initializer.DatabaseInitializer;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,5 +30,11 @@ class ApplicationModule {
     @Singleton
     AppDatabase providesDatabase(DatabaseInitializer databaseInitializer) {
         return databaseInitializer.getDatabase();
+    }
+
+    @Provides
+    @Singleton
+    Executor providesExecutor() {
+        return Executors.newSingleThreadExecutor();
     }
 }

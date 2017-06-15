@@ -32,6 +32,6 @@ public class ExercisesListViewModel extends ViewModel {
     }
 
     void remove(Exercise exercise) {
-        exercisesRepository.remove(exercise);
+        exercisesRepository.delete(exercise);
     }
 }

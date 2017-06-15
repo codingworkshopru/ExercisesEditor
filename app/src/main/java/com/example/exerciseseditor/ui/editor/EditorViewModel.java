@@ -8,12 +8,8 @@ import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.repository.ExercisesRepository;
 import com.example.exerciseseditor.repository.MuscleGroupsRepository;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -37,6 +33,16 @@ public class EditorViewModel extends ViewModel {
         this.muscleGroupsRepository = muscleGroupsRepository;
     }
 
+    void init(long exerciseId) {
+        if (liveExercise != null) {
+            return;
+        }
+
+        liveExercise = exercisesRepository.getExerciseById(exerciseId);
+        liveSecondaryMuscleGroups = exercisesRepository.getSecondaryMuscleGroupsForExercise(exerciseId);
+        liveMuscleGroups = muscleGroupsRepository.getMuscleGroups();
+    }
+
     public LiveData<List<MuscleGroupEntity>> getMuscleGroups() {
         return liveMuscleGroups;
     }
@@ -49,43 +55,17 @@ public class EditorViewModel extends ViewModel {
         return liveSecondaryMuscleGroups;
     }
 
-    void addSecondaryMuscleGroupToExercise(int index) {
-        if (liveMuscleGroups.getValue() == null) {
-            return;
-        }
-
-        MuscleGroupEntity muscleGroup = liveMuscleGroups.getValue().get(index);
+    void addSecondaryMuscleGroupToExercise(int selectedMuscleGroupIndex) {
+        MuscleGroupEntity muscleGroup = liveMuscleGroups.getValue().get(selectedMuscleGroupIndex);
         if (!Iterables.tryFind(liveSecondaryMuscleGroups.getValue(), (mg) -> mg.getId() == muscleGroup.getId()).isPresent())
             liveSecondaryMuscleGroups.getValue().add(muscleGroup);
     }
 
+    void removeSecondaryMuscleGroupFromExercise(int secondaryMuscleGroupIndex) {
+        liveSecondaryMuscleGroups.getValue().remove(secondaryMuscleGroupIndex);
+    }
+
     void saveChanges() {
-        exercisesRepository.update(liveExercise.getValue());
-
-        List<MuscleGroupEntity> originalSecondaryMuscleGroups = liveSecondaryMuscleGroups.getValue();
-
-        Set<MuscleGroupEntity> newSet = createNewHashSet(liveSecondaryMuscleGroups.getValue());
-        Set<MuscleGroupEntity> oldSet = createNewHashSet(originalSecondaryMuscleGroups);
-        Set<MuscleGroupEntity> commonSet = Sets.intersection(newSet, oldSet);
-
-        List<MuscleGroupEntity> toDelete = Lists.newArrayList(Sets.difference(oldSet, commonSet));
-        List<MuscleGroupEntity> toCreate = Lists.newArrayList(Sets.difference(newSet, commonSet));
-
-        exercisesRepository.addSecondaryMuscleGroupsToExercise(liveExercise.getValue(), toCreate);
-        exercisesRepository.deleteSecondaryMuscleGroupsFromExercise(liveExercise.getValue(), toDelete);
-    }
-
-    private static <T> Set<T> createNewHashSet(Collection<T> from) {
-        return from == null ? Sets.newHashSet() : Sets.newHashSet(from);
-    }
-
-    void init(long exerciseId) {
-        if (liveExercise != null) {
-            return;
-        }
-
-        liveExercise = exercisesRepository.getExerciseById(exerciseId);
-        liveSecondaryMuscleGroups = exercisesRepository.getSecondaryMuscleGroupsForExercise(exerciseId);
-        liveMuscleGroups = muscleGroupsRepository.getMuscleGroups();
+        exercisesRepository.update(liveExercise.getValue(), liveSecondaryMuscleGroups.getValue());
     }
 }
