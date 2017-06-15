@@ -1,13 +1,15 @@
 package com.example.exerciseseditor.ui.editor;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.repository.ExercisesRepository;
 import com.example.exerciseseditor.repository.MuscleGroupsRepository;
-import com.google.common.collect.Iterables;
+import com.example.exerciseseditor.util.LiveDataUtil;
+import com.google.common.base.Preconditions;
 
 import java.util.List;
 
@@ -23,9 +25,9 @@ public class EditorViewModel extends ViewModel {
     private ExercisesRepository exercisesRepository;
     private MuscleGroupsRepository muscleGroupsRepository;
 
-    private LiveData<ExerciseEntity> liveExercise;
-    private LiveData<List<MuscleGroupEntity>> liveMuscleGroups;
-    private LiveData<List<MuscleGroupEntity>> liveSecondaryMuscleGroups;
+    private LiveData<ExerciseEntity> exercise;
+    private LiveData<List<MuscleGroupEntity>> muscleGroups;
+    private LiveData<List<MuscleGroupEntity>> secondaryMuscleGroups;
 
     @Inject
     EditorViewModel(ExercisesRepository exercisesRepository, MuscleGroupsRepository muscleGroupsRepository) {
@@ -34,38 +36,60 @@ public class EditorViewModel extends ViewModel {
     }
 
     void init(long exerciseId) {
-        if (liveExercise != null) {
-            return;
+        if (exercise == null) {
+            muscleGroups = muscleGroupsRepository.getMuscleGroups();
+            secondaryMuscleGroups = exercisesRepository.getSecondaryMuscleGroupsForExercise(exerciseId);
+            exercise = getLiveExercise(exerciseId);
         }
+    }
 
-        liveExercise = exercisesRepository.getExerciseById(exerciseId);
-        liveSecondaryMuscleGroups = exercisesRepository.getSecondaryMuscleGroupsForExercise(exerciseId);
-        liveMuscleGroups = muscleGroupsRepository.getMuscleGroups();
+    private LiveData<ExerciseEntity> getLiveExercise(long exerciseId) {
+        if (exerciseId == PHANTOM_ID) {
+            return Transformations.map(muscleGroups, (mg) -> new ExerciseEntity());
+        } else {
+            return Transformations.switchMap(muscleGroups,
+                    (mg) -> mg == null
+                            ? LiveDataUtil.getAbsent()
+                            : exercisesRepository.getExerciseById(exerciseId));
+        }
     }
 
     public LiveData<List<MuscleGroupEntity>> getMuscleGroups() {
-        return liveMuscleGroups;
+        return muscleGroups;
     }
 
     public LiveData<ExerciseEntity> getExercise() {
-        return liveExercise;
+        return exercise;
     }
 
     LiveData<List<MuscleGroupEntity>> getSecondaryMuscleGroups() {
-        return liveSecondaryMuscleGroups;
-    }
-
-    void addSecondaryMuscleGroupToExercise(int selectedMuscleGroupIndex) {
-        MuscleGroupEntity muscleGroup = liveMuscleGroups.getValue().get(selectedMuscleGroupIndex);
-        if (!Iterables.tryFind(liveSecondaryMuscleGroups.getValue(), (mg) -> mg.getId() == muscleGroup.getId()).isPresent())
-            liveSecondaryMuscleGroups.getValue().add(muscleGroup);
-    }
-
-    void removeSecondaryMuscleGroupFromExercise(int secondaryMuscleGroupIndex) {
-        liveSecondaryMuscleGroups.getValue().remove(secondaryMuscleGroupIndex);
+        return secondaryMuscleGroups;
     }
 
     void saveChanges() {
-        exercisesRepository.update(liveExercise.getValue(), liveSecondaryMuscleGroups.getValue());
+        ExerciseEntity ex = Preconditions.checkNotNull(exercise.getValue(), "Can't save exercise because it's null");
+
+        if (ex.getId() == PHANTOM_ID)
+            exercisesRepository.create(ex, secondaryMuscleGroups.getValue());
+        else
+            exercisesRepository.update(ex, secondaryMuscleGroups.getValue());
+    }
+
+    void addSecondaryMuscleGroupToExercise(int selectedMuscleGroupIndex) {
+        List<MuscleGroupEntity> staticSecondaryMuscleGroups = returnSecondaryMuscleGroups();
+        List<MuscleGroupEntity> staticMuscleGroups = Preconditions.checkNotNull(muscleGroups.getValue(), "Muscle groups have not been loaded");
+
+        MuscleGroupEntity muscleGroup = staticMuscleGroups.get(selectedMuscleGroupIndex);
+        if (!staticSecondaryMuscleGroups.contains(muscleGroup)) {
+            staticSecondaryMuscleGroups.add(muscleGroup);
+        }
+    }
+
+    void removeSecondaryMuscleGroupFromExercise(int secondaryMuscleGroupIndex) {
+        returnSecondaryMuscleGroups().remove(secondaryMuscleGroupIndex);
+    }
+
+    private List<MuscleGroupEntity> returnSecondaryMuscleGroups() {
+        return Preconditions.checkNotNull(secondaryMuscleGroups.getValue(), "Secondary muscle groups have not been loaded");
     }
 }

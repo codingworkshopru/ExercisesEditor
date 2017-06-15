@@ -34,8 +34,12 @@ public final class ExercisesRepository {
 
     // create
 
-    public void create(ExerciseEntity exercise) {
-        executor.execute(() -> exerciseDao.createExercise(exercise));
+    public void create(ExerciseEntity exercise, List<MuscleGroupEntity> secondaryMuscleGroups) {
+        executor.execute(() -> {
+            exerciseDao.createExercise(exercise);
+            ExerciseEntity exerciseWithId = exerciseDao.getExerciseByName(exercise.getName());
+            helper.updateLinks(exerciseWithId, secondaryMuscleGroups);
+        });
     }
 
     @WorkerThread
@@ -64,13 +68,11 @@ public final class ExercisesRepository {
 
     // update
 
-    public void update(ExerciseEntity exercise) {
-        executor.execute(() -> exerciseDao.updateExercise(exercise));
-    }
-
     public void update(ExerciseEntity exercise, List<MuscleGroupEntity> secondaryMuscleGroups) {
-        update(exercise);
-        executor.execute(() -> helper.updateLinks(exercise, secondaryMuscleGroups));
+        executor.execute(() -> {
+            exerciseDao.updateExercise(exercise);
+            helper.updateLinks(exercise, secondaryMuscleGroups);
+        });
     }
 
     // delete

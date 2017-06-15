@@ -33,6 +33,9 @@ public interface ExerciseDao {
     @Query("select * from exercise where id = :id")
     LiveData<ExerciseEntity> getExerciseById(long id);
 
+    @Query("select * from exercise where name = :name")
+    ExerciseEntity getExerciseByName(String name);
+
     @Query("select * from exercise where id = :id")
     ExerciseEntity getExerciseByIdSync(long id);
 

@@ -57,22 +57,14 @@ public class EditorActivity extends LifecycleDaggerActivity
     }
 
     private void initData() {
-        viewModel.getMuscleGroups().observe(this, this::onMuscleGroupsLoaded);
+        viewModel.getMuscleGroups().observe(this, this::initMuscleGroupsSpinner);
+        viewModel.getExercise().observe(this, (exercise) -> binding.setExercise(exercise));
         viewModel.getSecondaryMuscleGroups().observe(this, this::initSecondaryMuscleGroupsList);
-    }
-
-    private void onMuscleGroupsLoaded(List<MuscleGroupEntity> muscleGroups) {
-        initMuscleGroupsSpinner(muscleGroups);
-        initExercise();
     }
 
     private void initMuscleGroupsSpinner(List<MuscleGroupEntity> muscleGroups) {
         MuscleGroupsAdapter muscleGroupsAdapter = new MuscleGroupsAdapter(muscleGroups);
         binding.spinner2.setAdapter(muscleGroupsAdapter);
-    }
-
-    private void initExercise() {
-        viewModel.getExercise().observe(this, (exercise) -> binding.setExercise(exercise));
     }
 
     private void initSecondaryMuscleGroupsList(List<MuscleGroupEntity> secondaryMuscleGroups) {

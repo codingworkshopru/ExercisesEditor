@@ -27,38 +27,52 @@ android {
     }
 }
 
+ext {
+    support = '25.4.0'
+    constraint = '1.0.2'
+    arch = '1.0.0-alpha2'
+
+    gson = '2.8.1'
+    guava = '22.0-android'
+    dagger = '2.11'
+
+    espresso = '2.2.2'
+    mockito = '2.8.9'
+    junit = '4.12'
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:recyclerview-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:recyclerview-v7:' + support
+    compile 'com.android.support:design:' + support
+    compile 'com.android.support:appcompat-v7:' + support
+    compile 'com.android.support.constraint:constraint-layout:' + constraint
 
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:' + junit
 
-    testCompile 'org.mockito:mockito-core:2.8.9'
-    androidTestCompile 'org.mockito:mockito-android:2.8.9'
+    testCompile 'org.mockito:mockito-core:' + mockito
+    androidTestCompile 'org.mockito:mockito-android:' + mockito
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:' + espresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support'
 
         exclude group: 'com.google.code.findbugs'
     })
     
-    compile 'com.google.guava:guava:22.0-android'
+    compile 'com.google.guava:guava:' + guava
 
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.google.code.gson:gson:' + gson
 
-    compile 'com.google.dagger:dagger:2.11'
-    compile 'com.google.dagger:dagger-android:2.11'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
+    compile 'com.google.dagger:dagger:' + dagger
+    compile 'com.google.dagger:dagger-android:' + dagger
+    annotationProcessor 'com.google.dagger:dagger-compiler:' + dagger
+    annotationProcessor 'com.google.dagger:dagger-android-processor:' + dagger
 
-    compile "android.arch.lifecycle:runtime:1.0.0-alpha2"
-    compile "android.arch.lifecycle:extensions:1.0.0-alpha2"
-    compile "android.arch.persistence.room:runtime:1.0.0-alpha2"
-    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha2"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha2"
-    androidTestCompile 'android.arch.core:core-testing:1.0.0-alpha2'
+    compile "android.arch.lifecycle:runtime:" + arch
+    compile "android.arch.lifecycle:extensions:" + arch
+    compile "android.arch.persistence.room:runtime:" + arch
+    annotationProcessor "android.arch.lifecycle:compiler:" + arch
+    annotationProcessor "android.arch.persistence.room:compiler:" + arch
+    androidTestCompile 'android.arch.core:core-testing:' + arch
 }

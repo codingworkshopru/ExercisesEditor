@@ -43,7 +43,15 @@ public class MuscleGroupEntity implements MuscleGroup {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof MuscleGroupEntity && (this == obj || ((MuscleGroupEntity) obj).getId() == id);
+        if (this == obj)
+            return true;
+
+        if (!(obj instanceof MuscleGroupEntity))
+            return  false;
+
+        MuscleGroupEntity other = (MuscleGroupEntity) obj;
+
+        return id == other.id;
     }
 
     @Override

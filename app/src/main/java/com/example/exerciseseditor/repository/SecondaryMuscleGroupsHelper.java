@@ -9,6 +9,7 @@ import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
 import com.example.exerciseseditor.db.entity.SecondaryMuscleGroupsForExerciseEntity;
 import com.example.exerciseseditor.model.Exercise;
 import com.example.exerciseseditor.model.MuscleGroup;
+import com.example.exerciseseditor.model.WithIdAndName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -35,15 +36,12 @@ final class SecondaryMuscleGroupsHelper {
     void updateLinks(ExerciseEntity exercise, List<MuscleGroupEntity> secondaryMuscleGroups) {
         long exerciseId = exercise.getId();
         if (exerciseId == 0)
-            throw new RuntimeException("Exercise doesn't exist in the database: " + exercise.getName());
+            throw new RuntimeException("Exercise doesn't exist: " + exercise.getName());
 
-        List<SecondaryMuscleGroupsForExerciseEntity> oldLinksList = exerciseDao.getSecondaryMuscleGroupsForExerciseSync(exerciseId);
-        List<SecondaryMuscleGroupsForExerciseEntity> newLinksList = createLinkInstances(exercise, secondaryMuscleGroups);
-
-        if (oldLinksList.isEmpty()) {
-            exerciseDao.createLinks(newLinksList);
-            return;
-        }
+        List<SecondaryMuscleGroupsForExerciseEntity> oldLinksList =
+                exerciseDao.getSecondaryMuscleGroupsForExerciseSync(exerciseId);
+        List<SecondaryMuscleGroupsForExerciseEntity> newLinksList =
+                createLinkInstances(exercise, secondaryMuscleGroups);
 
         Set<SecondaryMuscleGroupsForExerciseEntity> oldLinks = Sets.newHashSet(oldLinksList);
         Set<SecondaryMuscleGroupsForExerciseEntity> newLinks = Sets.newHashSet(newLinksList);
@@ -53,20 +51,12 @@ final class SecondaryMuscleGroupsHelper {
     }
 
     void createExercises(List<ExerciseEntity> exercises) {
-        List<MuscleGroupEntity> muscleGroups = muscleGroupDao.getAllMuscleGroupsSync();
-        Map<String, Long> nameIdMuscleGroupsMap = Maps.newHashMapWithExpectedSize(muscleGroups.size());
-        for (MuscleGroup muscleGroup : muscleGroups) {
-            nameIdMuscleGroupsMap.put(muscleGroup.getName(), muscleGroup.getId());
-        }
-        for (ExerciseEntity exercise : exercises) {
+        Map<String, Long> nameIdMuscleGroupsMap = createNameIdMap(muscleGroupDao.getAllMuscleGroupsSync());
+        for (ExerciseEntity exercise : exercises)
             exercise.setPrimaryMuscleGroup(nameIdMuscleGroupsMap.get(exercise.primaryMuscle));
-        }
         exerciseDao.insertExercises(exercises);
-        List<ExerciseEntity> exercisesWithIds = exerciseDao.getAllExercisesSync();
-        Map<String, Long> nameIdExercisesMap = Maps.newHashMapWithExpectedSize(exercisesWithIds.size());
-        for (Exercise exercise : exercisesWithIds) {
-            nameIdExercisesMap.put(exercise.getName(), exercise.getId());
-        }
+
+        Map<String, Long> nameIdExercisesMap = createNameIdMap(exerciseDao.getAllExercisesSync());
 
         List<SecondaryMuscleGroupsForExerciseEntity> links = new LinkedList<>();
         for (ExerciseEntity exercise : exercises) {
@@ -82,6 +72,13 @@ final class SecondaryMuscleGroupsHelper {
         }
 
         exerciseDao.createLinks(links);
+    }
+
+    private static Map<String, Long> createNameIdMap(List<? extends WithIdAndName> entities) {
+        Map<String, Long> result = Maps.newHashMapWithExpectedSize(entities.size());
+        for (WithIdAndName entity : entities)
+            result.put(entity.getName(), entity.getId());
+        return result;
     }
 
     private static List<SecondaryMuscleGroupsForExerciseEntity> createLinkInstances(Exercise e, List<? extends MuscleGroup> muscleGroups) {
