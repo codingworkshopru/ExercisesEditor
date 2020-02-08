@@ -10,7 +10,7 @@ import dagger.android.ContributesAndroidInjector;
  */
 
 @Module
-abstract class FragmentModule {
+interface FragmentModule {
     @ContributesAndroidInjector
-    abstract SecondaryMuscleGroupSelector contributeSecondaryMuscleGroupSelectorInjector();
+    SecondaryMuscleGroupSelector contributeSecondaryMuscleGroupSelectorInjector();
 }

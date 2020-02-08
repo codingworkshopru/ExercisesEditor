@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.repository;
 
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.dao.MuscleGroupDao;

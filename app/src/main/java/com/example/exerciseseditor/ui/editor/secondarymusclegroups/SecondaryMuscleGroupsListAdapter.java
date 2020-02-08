@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.ui.editor.secondarymusclegroups;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

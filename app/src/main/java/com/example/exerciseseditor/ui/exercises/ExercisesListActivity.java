@@ -1,16 +1,18 @@
 package com.example.exerciseseditor.ui.exercises;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ExercisesListItemBinding;
@@ -50,18 +52,16 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.addMenuItem:
-                Intent intent = new Intent(this, EditorActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.addMenuItem) {
+            Intent intent = new Intent(this, EditorActivity.class);
+            startActivity(intent);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ExercisesListViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(ExercisesListViewModel.class);
     }
 
     private void obtainData() {
@@ -82,19 +82,20 @@ public class ExercisesListActivity extends LifecycleDaggerActivity {
     }
 
     private void initRecyclerView() {
-        RecyclerView rv = (RecyclerView) findViewById(R.id.exercises);
+        RecyclerView rv = findViewById(R.id.exercises);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-                Exercise exercise = ((ExercisesListItemBinding)((BindingListViewHolder) viewHolder).binding).getItem();
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                ViewDataBinding binding = ((BindingListViewHolder) viewHolder).binding;
+                Exercise exercise = ((ExercisesListItemBinding) binding).getItem();
                 viewModel.remove(exercise);
             }
         }).attachToRecyclerView(rv);

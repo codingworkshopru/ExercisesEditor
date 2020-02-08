@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.db.converters;
 
-import android.arch.persistence.room.TypeConverter;
+import androidx.room.TypeConverter;
 
 import com.example.exerciseseditor.model.ExerciseDifficulty;
 

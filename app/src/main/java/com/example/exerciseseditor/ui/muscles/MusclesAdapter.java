@@ -1,8 +1,8 @@
 package com.example.exerciseseditor.ui.muscles;
 
-import android.arch.lifecycle.Observer;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

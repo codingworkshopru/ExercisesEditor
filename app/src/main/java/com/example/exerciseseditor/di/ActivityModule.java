@@ -12,13 +12,13 @@ import dagger.android.ContributesAndroidInjector;
  */
 
 @Module
-abstract class ActivityModule {
+interface ActivityModule {
     @ContributesAndroidInjector
-    abstract MuscleGroupsActivity contributeMuscleGroupsListActivityInjector();
+    MuscleGroupsActivity contributeMuscleGroupsListActivityInjector();
 
     @ContributesAndroidInjector
-    abstract ExercisesListActivity contributeExercisesListActivityInjector();
+    ExercisesListActivity contributeExercisesListActivityInjector();
 
     @ContributesAndroidInjector
-    abstract EditorActivity contributeEditorActivityInjector();
+    EditorActivity contributeEditorActivityInjector();
 }

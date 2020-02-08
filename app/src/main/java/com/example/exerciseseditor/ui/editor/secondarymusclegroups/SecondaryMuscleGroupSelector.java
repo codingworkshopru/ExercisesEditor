@@ -2,14 +2,15 @@ package com.example.exerciseseditor.ui.editor.secondarymusclegroups;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.exerciseseditor.ui.editor.EditorActivity;
 import com.example.exerciseseditor.ui.editor.EditorViewModel;
@@ -17,13 +18,13 @@ import com.example.exerciseseditor.ui.editor.MuscleGroupsAdapter;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
+import dagger.android.support.AndroidSupportInjection;
 
 /**
  * Created by Радик on 06.06.2017.
  */
 
-public class SecondaryMuscleGroupSelector extends DialogFragment implements LifecycleRegistryOwner {
+public class SecondaryMuscleGroupSelector extends DialogFragment {
 
     public interface OnSecondaryMuscleGroupSelectListener {
         void onMuscleGroupSelect(DialogInterface dialog, int which);
@@ -36,15 +37,16 @@ public class SecondaryMuscleGroupSelector extends DialogFragment implements Life
     private EditorViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
-        AndroidInjection.inject(this);
+    public void onAttach(@NonNull Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
 
         EditorActivity activity = (EditorActivity) getActivity();
-        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(EditorViewModel.class);
+        viewModel = new ViewModelProvider((ViewModelStoreOwner) context, viewModelFactory).get(EditorViewModel.class);
         listener = activity;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
@@ -52,6 +54,7 @@ public class SecondaryMuscleGroupSelector extends DialogFragment implements Life
                 .create();
     }
 
+    @NonNull
     @Override
     public LifecycleRegistry getLifecycle() {
         return lifecycleRegistry;

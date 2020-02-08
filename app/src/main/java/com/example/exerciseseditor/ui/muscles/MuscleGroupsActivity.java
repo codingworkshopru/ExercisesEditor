@@ -1,12 +1,12 @@
 package com.example.exerciseseditor.ui.muscles;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;
@@ -37,7 +37,7 @@ public class MuscleGroupsActivity extends LifecycleDaggerActivity {
     }
 
     private void initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MusclesViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(MusclesViewModel.class);
     }
 
     private void obtainData() {
@@ -50,7 +50,7 @@ public class MuscleGroupsActivity extends LifecycleDaggerActivity {
     }
 
     private void initRecyclerView() {
-        RecyclerView rv = (RecyclerView) findViewById(R.id.muscleGroups);
+        RecyclerView rv = findViewById(R.id.muscleGroups);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
     }

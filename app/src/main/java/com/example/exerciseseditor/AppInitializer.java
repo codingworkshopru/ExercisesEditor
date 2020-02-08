@@ -1,7 +1,7 @@
 package com.example.exerciseseditor;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
 import com.example.exerciseseditor.db.initializer.Initializer;

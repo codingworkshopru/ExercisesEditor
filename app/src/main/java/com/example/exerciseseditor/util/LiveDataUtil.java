@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.util;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 /**
  * Created by Радик on 31.05.2017.

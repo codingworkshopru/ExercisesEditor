@@ -1,7 +1,7 @@
 package com.example.exerciseseditor.db.initializer;
 
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase.Builder;
+import androidx.room.Room;
+import androidx.room.RoomDatabase.Builder;
 import android.content.Context;
 
 import com.example.exerciseseditor.BuildConfig;

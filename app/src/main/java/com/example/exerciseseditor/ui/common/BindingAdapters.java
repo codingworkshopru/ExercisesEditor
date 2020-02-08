@@ -1,8 +1,8 @@
 package com.example.exerciseseditor.ui.common;
 
-import android.databinding.BindingAdapter;
-import android.databinding.InverseBindingAdapter;
-import android.databinding.InverseBindingListener;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.InverseBindingAdapter;
+import androidx.databinding.InverseBindingListener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;

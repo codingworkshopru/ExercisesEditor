@@ -20,7 +20,7 @@
             android:padding="16dp">
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Name"
                     android:text="@={exercise.name}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="Secondary muscle groups" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/secondaryMuscleGroups"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -87,7 +87,7 @@
 
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -96,9 +96,9 @@
                     android:layout_height="wrap_content"
                     android:hint="YouTube video"
                     android:text="@={exercise.youTubeVideo}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -107,9 +107,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Steps"
                     android:text="@={exercise.steps}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -118,9 +118,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Advices"
                     android:text="@={exercise.advices}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -129,9 +129,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Variations"
                     android:text="@={exercise.variations}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -140,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Caution"
                     android:text="@={exercise.caution}" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>

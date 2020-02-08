@@ -1,7 +1,7 @@
 package com.example.exerciseseditor.di;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseseditor.ui.editor.EditorViewModel;
 import com.example.exerciseseditor.ui.exercises.ExercisesListViewModel;
@@ -17,22 +17,22 @@ import dagger.multibindings.IntoMap;
  */
 
 @Module
-abstract class ViewModelModule {
+interface ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(MusclesViewModel.class)
-    abstract ViewModel bindsMusclesViewModel(MusclesViewModel musclesViewModel);
+    ViewModel bindsMusclesViewModel(MusclesViewModel musclesViewModel);
 
     @Binds
     @IntoMap
     @ViewModelKey(ExercisesListViewModel.class)
-    abstract ViewModel bindsExercisesListViewModel(ExercisesListViewModel exercisesListViewModel);
+    ViewModel bindsExercisesListViewModel(ExercisesListViewModel exercisesListViewModel);
 
     @Binds
     @IntoMap
     @ViewModelKey(EditorViewModel.class)
-    abstract ViewModel bindsEditorViewModel(EditorViewModel editorViewModel);
+    ViewModel bindsEditorViewModel(EditorViewModel editorViewModel);
 
     @Binds
-    abstract ViewModelProvider.Factory bindsViewModelFactory(ViewModelFactory viewModelFactory);
+    ViewModelProvider.Factory bindsViewModelFactory(ViewModelFactory viewModelFactory);
 }

@@ -1,10 +1,9 @@
 package com.example.exerciseseditor.ui.common;
 
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import dagger.android.AndroidInjection;
 
@@ -12,17 +11,11 @@ import dagger.android.AndroidInjection;
  * Created by Радик on 02.06.2017.
  */
 
-public abstract class LifecycleDaggerActivity extends AppCompatActivity implements LifecycleRegistryOwner {
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+public abstract class LifecycleDaggerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
     }
 }

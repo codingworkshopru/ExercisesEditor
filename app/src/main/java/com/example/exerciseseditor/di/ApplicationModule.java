@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.support.AndroidSupportInjectionModule;
 
 /**
  * Created by Радик on 31.05.2017.
@@ -21,7 +22,8 @@ import dagger.Provides;
                 ViewModelModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
-                DatabaseModule.class
+                DatabaseModule.class,
+                AndroidSupportInjectionModule.class
         }
 )
 class ApplicationModule {

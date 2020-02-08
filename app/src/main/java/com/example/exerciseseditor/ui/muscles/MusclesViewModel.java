@@ -1,8 +1,8 @@
 package com.example.exerciseseditor.ui.muscles;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
 
 import com.example.exerciseseditor.AppInitializer;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;

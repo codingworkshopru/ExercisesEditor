@@ -1,10 +1,10 @@
 package com.example.exerciseseditor.db;
 
-import android.arch.core.executor.testing.CountingTaskExecutorRule;
-import android.arch.persistence.room.Room;
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
+import androidx.room.Room;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.entity.ExerciseEntity;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class InitializationAndLoadingTest {
-    private Context context = InstrumentationRegistry.getTargetContext();
+    private Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     private AppDatabase db;
     private ExerciseDao exerciseDao;
 

@@ -1,6 +1,6 @@
 package com.example.exerciseseditor.repository;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import com.example.exerciseseditor.db.dao.MuscleGroupDao;
 import com.example.exerciseseditor.db.entity.MuscleGroupEntity;

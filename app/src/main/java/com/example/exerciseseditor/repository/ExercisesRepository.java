@@ -1,7 +1,7 @@
 package com.example.exerciseseditor.repository;
 
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.WorkerThread;
+import androidx.lifecycle.LiveData;
+import androidx.annotation.WorkerThread;
 
 import com.example.exerciseseditor.db.dao.ExerciseDao;
 import com.example.exerciseseditor.db.dao.MuscleGroupDao;

@@ -1,19 +1,19 @@
 package com.example.exerciseseditor.ui.editor;
 
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseseditor.R;
 import com.example.exerciseseditor.databinding.ActivityEditorBinding;
@@ -28,14 +28,14 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasFragmentInjector;
+import dagger.android.HasAndroidInjector;
 
 public class EditorActivity extends LifecycleDaggerActivity
-        implements HasFragmentInjector,
+        implements HasAndroidInjector,
         SecondaryMuscleGroupSelector.OnSecondaryMuscleGroupSelectListener {
 
     @Inject ViewModelProvider.Factory viewModelFactory;
-    @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
+    @Inject DispatchingAndroidInjector<Object> fragmentInjector;
 
     private ActivityEditorBinding binding;
     private EditorViewModel viewModel;
@@ -51,7 +51,7 @@ public class EditorActivity extends LifecycleDaggerActivity
     }
 
     private void initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditorViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(EditorViewModel.class);
         long exerciseId = getIntent().getLongExtra("id", EditorViewModel.PHANTOM_ID);
         viewModel.init(exerciseId);
     }
@@ -74,14 +74,14 @@ public class EditorActivity extends LifecycleDaggerActivity
         rv.setAdapter(secondaryMuscleGroupsListAdapter);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 int removedIndex = viewHolder.getAdapterPosition();
                 viewModel.removeSecondaryMuscleGroupFromExercise(removedIndex);
                 secondaryMuscleGroupsListAdapter.notifyItemRemoved(removedIndex);
             }
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
                 return false;
             }
         }).attachToRecyclerView(rv);
@@ -96,27 +96,25 @@ public class EditorActivity extends LifecycleDaggerActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.doneMenuItem:
-                viewModel.saveChanges();
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.doneMenuItem) {
+            viewModel.saveChanges();
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onAddMuscleGroupButtonClick(View view) {
         final String tag =  "selector";
-        DialogFragment selector = (DialogFragment) getFragmentManager().findFragmentByTag(tag);
+        DialogFragment selector = (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (selector == null) {
             selector = new SecondaryMuscleGroupSelector();
         }
-        selector.show(getFragmentManager(), tag);
+        selector.show(getSupportFragmentManager(), tag);
     }
 
     @Override
-    public AndroidInjector<Fragment> fragmentInjector() {
+    public AndroidInjector<Object> androidInjector() {
         return fragmentInjector;
     }
 
