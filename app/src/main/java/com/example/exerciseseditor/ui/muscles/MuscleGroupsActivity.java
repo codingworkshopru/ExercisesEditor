@@ -27,6 +27,7 @@ public class MuscleGroupsActivity extends LifecycleDaggerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muscle_groups_list);
 

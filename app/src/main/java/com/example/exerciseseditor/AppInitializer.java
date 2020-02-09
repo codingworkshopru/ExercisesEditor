@@ -1,13 +1,13 @@
 package com.example.exerciseseditor;
 
-import android.annotation.SuppressLint;
 import androidx.lifecycle.MutableLiveData;
-import android.os.AsyncTask;
 
 import com.example.exerciseseditor.db.initializer.Initializer;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,35 +19,33 @@ import javax.inject.Singleton;
 @Singleton
 public class AppInitializer implements Initializer {
     private Map<Integer, Initializer> initializerMap;
+    private Executor executor;
     private MutableLiveData<Boolean> initialized = new MutableLiveData<>();
 
     @Inject
-    AppInitializer(Map<Integer, Initializer> commands) {
+    AppInitializer(Map<Integer, Initializer> commands, Executor executor) {
         this.initializerMap = new TreeMap<>(commands);
+        this.executor = executor;
     }
 
     public MutableLiveData<Boolean> getInitialized() {
         return initialized;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     public void initialize() {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                for (Initializer initializer : initializerMap.values()) {
-                    initializer.initialize();
-                }
-
-                return null;
+        CountDownLatch cdl = new CountDownLatch(1);
+        executor.execute(() -> {
+            for (Initializer initializer : initializerMap.values()) {
+                initializer.initialize();
             }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                initialized.setValue(true);
-            }
-        }.execute();
+            initialized.postValue(true);
+            cdl.countDown();
+        });
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

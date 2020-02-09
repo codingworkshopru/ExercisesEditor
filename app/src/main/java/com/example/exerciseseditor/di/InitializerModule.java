@@ -15,19 +15,19 @@ import dagger.multibindings.IntoMap;
  */
 
 @Module
-abstract class InitializerModule {
+interface InitializerModule {
     @Binds
     @IntoMap
     @IntKey(0)
-    abstract Initializer bindsDatabaseInitializer(DatabaseInitializer databaseInitializer);
+    Initializer bindsDatabaseInitializer(DatabaseInitializer databaseInitializer);
 
     @Binds
     @IntoMap
     @IntKey(1)
-    abstract Initializer bindsMuscleGroupInitializer(MuscleGroupInitializer muscleGroupInitializer);
+    Initializer bindsMuscleGroupInitializer(MuscleGroupInitializer muscleGroupInitializer);
 
     @Binds
     @IntoMap
     @IntKey(2)
-    abstract Initializer bindsExerciseInitializer(ExerciseInitializer exerciseInitializer);
+    Initializer bindsExerciseInitializer(ExerciseInitializer exerciseInitializer);
 }
